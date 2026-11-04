@@ -16,7 +16,7 @@ React, TypeScript, Tailwind CSS y componentes accesibles basados en Radix (estil
 - `/profesional/:slug` — perfil completo con pestañas de información, trabajos, reseñas
   verificadas y disponibilidad, además de contacto directo y solicitud de presupuesto.
 - `/profesionales` — landing de captación: beneficios, cómo entrar, cuota de 99 €/año, FAQ y
-  formulario para reservar plaza.
+  formulario inline de alta en 3 pasos que envía la solicitud a WhatsApp.
 
 ## Desarrollo
 
@@ -55,9 +55,9 @@ Toda la información es de demostración. Los 14 perfiles incluyen biografía, s
 idiomas, horario, galería y 3–4 reseñas detalladas. Para editar contenido, cambia
 `src/data/professionals.ts` y `src/data/categories.ts`.
 
-Los formularios de presupuesto y alta son demos de interfaz: muestran el estado de éxito, pero no
-envían datos a ningún servidor. Para producción, conecta `QuoteDialog` y `JoinDialog` a tu CRM o
-endpoint.
+El formulario de presupuesto sigue siendo una demo de interfaz. El formulario de alta de
+profesionales envía la solicitud formateada a WhatsApp; el número de destino se configura en la
+constante `OFICIO_WHATSAPP_NUMBER` de `src/components/ProfessionalSignupForm.tsx`.
 
 ## Fotografía
 

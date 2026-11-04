@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   ArrowRight,
@@ -12,7 +11,7 @@ import {
   Star,
   Users,
 } from 'lucide-react'
-import { JoinDialog } from '@/components/LeadDialogs'
+import { ProfessionalSignupForm } from '@/components/ProfessionalSignupForm'
 import { Reveal } from '@/components/Reveal'
 import { SectionLabel } from '@/components/SectionLabel'
 import { SeoMeta } from '@/components/seo/SeoMeta'
@@ -128,7 +127,6 @@ const faqs = [
 ]
 
 export function ForProfessionalsPage() {
-  const [joinOpen, setJoinOpen] = useState(false)
   const ana = professionalsBySlug['ana-torres']
   const carlos = professionalsBySlug['carlos-vidal']
 
@@ -174,9 +172,11 @@ export function ForProfessionalsPage() {
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <Button variant="accent" size="lg" onClick={() => setJoinOpen(true)}>
-                  Reservar mi plaza
-                  <ArrowUpRight className="h-4 w-4" strokeWidth={1.5} />
+                <Button asChild variant="accent" size="lg">
+                  <a href="#alta">
+                    Reservar mi plaza
+                    <ArrowUpRight className="h-4 w-4" strokeWidth={1.5} />
+                  </a>
                 </Button>
                 <Button asChild variant="outline" size="lg">
                   <a href="#precio">Ver qué incluye</a>
@@ -469,18 +469,62 @@ export function ForProfessionalsPage() {
                 </ul>
 
                 <Button
+                  asChild
                   variant="light"
                   size="lg"
                   className="mt-8 w-full"
-                  onClick={() => setJoinOpen(true)}
                 >
-                  Reservar mi plaza
-                  <ArrowUpRight className="h-4 w-4" strokeWidth={1.5} />
+                  <a href="#alta">
+                    Reservar mi plaza
+                    <ArrowUpRight className="h-4 w-4" strokeWidth={1.5} />
+                  </a>
                 </Button>
                 <p className="mt-3 text-center font-mono text-[8px] uppercase tracking-[0.12em] text-background/60">
                   Verificación previa · Sin cargo hasta ser aceptado
                 </p>
               </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="alta"
+        className="scroll-mt-24 border-t border-line bg-fog py-20 sm:py-24 lg:py-28"
+      >
+        <div className="container-editorial">
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
+            <Reveal className="lg:col-span-4">
+              <SectionLabel>Alta de profesional</SectionLabel>
+              <h2 className="display-lg mt-5 max-w-[10ch] text-balance">
+                Solicita tu plaza.
+              </h2>
+              <p className="body-lg mt-6 max-w-[32ch]">
+                Rellena tu perfil en tres pasos. Revisaremos tu solicitud y te contactaremos en
+                menos de 24 horas.
+              </p>
+
+              <ul className="mt-8 space-y-4 border-t border-line pt-6">
+                {[
+                  '99 € al año, todo incluido',
+                  'Verificación de identidad y seguro',
+                  'Sin comisiones por trabajo',
+                  'Plazas limitadas por oficio y zona',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5 text-[12px] text-muted">
+                    <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-clay-deep" strokeWidth={1.8} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              <p className="mt-8 font-mono text-[8px] uppercase leading-relaxed tracking-[0.13em] text-muted">
+                Tus datos solo se usan para valorar tu candidatura.
+              </p>
+            </Reveal>
+
+            <Reveal delay={100} className="lg:col-span-8">
+              <ProfessionalSignupForm />
             </Reveal>
           </div>
         </div>
@@ -536,9 +580,11 @@ export function ForProfessionalsPage() {
               </p>
             </Reveal>
             <Reveal delay={100} className="lg:col-span-4 lg:justify-self-end">
-              <Button variant="light" size="lg" onClick={() => setJoinOpen(true)}>
-                Reservar mi plaza
-                <ArrowUpRight className="h-4 w-4" strokeWidth={1.5} />
+              <Button asChild variant="light" size="lg">
+                <a href="#alta">
+                  Reservar mi plaza
+                  <ArrowUpRight className="h-4 w-4" strokeWidth={1.5} />
+                </a>
               </Button>
               <p className="mt-4 font-mono text-[8px] uppercase tracking-[0.13em] text-cream/90">
                 O escríbenos a profesionales@oficio.ibiza
@@ -548,7 +594,6 @@ export function ForProfessionalsPage() {
         </div>
       </section>
 
-      <JoinDialog open={joinOpen} onOpenChange={setJoinOpen} />
     </>
   )
 }
