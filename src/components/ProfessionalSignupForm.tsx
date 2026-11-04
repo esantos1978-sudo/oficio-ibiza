@@ -51,7 +51,6 @@ type FormData = {
   experience: string
   languages: string[]
   zone: string
-  insurance: string
   bio: string
   phone: string
   whatsapp: string
@@ -69,7 +68,6 @@ const initialForm: FormData = {
   experience: '',
   languages: [],
   zone: '',
-  insurance: '',
   bio: '',
   phone: '',
   whatsapp: '',
@@ -90,7 +88,6 @@ function fieldId(key: string) {
     category: 'signup-category',
     specialty: 'signup-specialty',
     zone: 'signup-zone',
-    insurance: 'signup-insurance-yes',
     phone: 'signup-phone',
     email: 'signup-email',
     verificationConsent: 'signup-verification-consent',
@@ -168,10 +165,6 @@ export function ProfessionalSignupForm() {
       if (!form.zone) {
         nextErrors.zone = 'Selecciona tu zona principal de trabajo.'
       }
-      if (!form.insurance) {
-        nextErrors.insurance =
-          'Indica si dispones de seguro de responsabilidad civil.'
-      }
     }
 
     if (currentStep === 2) {
@@ -224,7 +217,6 @@ export function ProfessionalSignupForm() {
       `⭐ Experiencia: ${form.experience || 'No indicada'}`,
       `🌍 Idiomas: ${form.languages.length > 0 ? form.languages.join(', ') : 'No indicados'}`,
       `📍 Zona: ${form.zone}`,
-      `🛡️ Seguro RC: ${form.insurance === 'si' ? 'Sí' : 'No'}`,
       '📝 Biografía:',
       form.bio.trim() || 'No indicada',
       `📞 Teléfono: ${form.phone.trim()}`,
@@ -487,7 +479,7 @@ export function ProfessionalSignupForm() {
 
           {step === 1 && (
             <div className="grid gap-5 sm:grid-cols-2">
-              <div>
+              <div className="sm:col-span-2">
                 <label htmlFor="signup-zone" className={labelClass}>
                   Zona principal de trabajo <span className="text-clay-deep">*</span>
                 </label>
@@ -523,43 +515,6 @@ export function ProfessionalSignupForm() {
                   </p>
                 )}
               </div>
-
-              <fieldset
-                aria-required="true"
-                aria-describedby={errors.insurance ? 'signup-insurance-error' : undefined}
-              >
-                <legend className={labelClass}>
-                  ¿Tienes seguro de responsabilidad civil?{' '}
-                  <span className="text-clay-deep">*</span>
-                </legend>
-                <div className="mt-3 flex flex-wrap gap-5">
-                  {[
-                    { value: 'si', label: 'Sí' },
-                    { value: 'no', label: 'No' },
-                  ].map((option) => (
-                    <label
-                      key={option.value}
-                      className="flex cursor-pointer items-center gap-2.5 text-[12px] text-muted transition-colors hover:text-ink"
-                    >
-                      <input
-                        id={`signup-insurance-${option.value}`}
-                        type="radio"
-                        name="insurance"
-                        value={option.value}
-                        checked={form.insurance === option.value}
-                        onChange={(event) => updateField('insurance', event.target.value)}
-                        className="radio-control"
-                      />
-                      {option.label}
-                    </label>
-                  ))}
-                </div>
-                {errors.insurance && (
-                  <p id="signup-insurance-error" className={errorClass}>
-                    {errors.insurance}
-                  </p>
-                )}
-              </fieldset>
 
               <div className="sm:col-span-2">
                 <div className="flex items-center justify-between gap-4">
