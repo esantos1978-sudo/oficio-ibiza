@@ -20,6 +20,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { QuoteDialog } from '@/components/LeadDialogs'
 import { StarRating } from '@/components/StarRating'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { SeoMeta } from '@/components/seo/SeoMeta'
 import {
   Dialog,
   DialogContent,
@@ -40,7 +42,11 @@ import {
   professionalsBySlug,
   type GalleryItem,
 } from '@/data/professionals'
-import { usePageMeta } from '@/hooks/usePageMeta'
+import {
+  SITE_URL,
+  generateProfessionalSchema,
+  type Professional as ProfessionalSchema,
+} from '@/lib/schemas/professionalSchema'
 
 export function ProfessionalPage() {
   const { slug } = useParams()
@@ -48,29 +54,46 @@ export function ProfessionalPage() {
   const [quoteOpen, setQuoteOpen] = useState(false)
   const [activeImage, setActiveImage] = useState<GalleryItem | null>(null)
 
-  usePageMeta({
-    title: professional
-      ? `${professional.name} — ${professional.specialty} en Ibiza | OFICIO`
-      : 'Profesional no encontrado | OFICIO',
-    description: professional?.tagline,
-  })
-
   if (!professional) {
     return (
-      <section className="container-editorial flex min-h-[60vh] flex-col items-center justify-center py-24 text-center">
-        <p className="eyebrow">Error 404</p>
-        <h1 className="display-md mt-5">Este perfil no existe.</h1>
-        <p className="body-lg mt-4 max-w-[40ch]">
-          Puede que el enlace haya cambiado o que el profesional ya no forme parte del directorio.
-        </p>
-        <Button asChild className="mt-8">
-          <Link to="/#servicios">Explorar servicios</Link>
-        </Button>
-      </section>
+      <>
+        <SeoMeta
+          title="Profesional no encontrado | OFICIO Ibiza"
+          description="La página que buscas no existe o el profesional ya no forma parte del directorio de OFICIO Ibiza."
+        />
+        <section className="container-editorial flex min-h-[60vh] flex-col items-center justify-center py-24 text-center">
+          <p className="eyebrow">Error 404</p>
+          <h1 className="display-md mt-5">Este perfil no existe.</h1>
+          <p className="body-lg mt-4 max-w-[40ch]">
+            Puede que el enlace haya cambiado o que el profesional ya no forme parte del directorio.
+          </p>
+          <Button asChild className="mt-8">
+            <Link to="/#servicios">Explorar servicios</Link>
+          </Button>
+        </section>
+      </>
     )
   }
 
   const category = categoryBySlug[professional.category]
+  const profileUrl = `${SITE_URL}/profesional/${professional.slug}`
+  const profileImage = `${SITE_URL}${professional.image}`
+  const profileDescription = `${professional.tagline} ${professional.specialty} en ${professional.location}. Profesional verificado en OFICIO Ibiza.`
+  const schemaData: ProfessionalSchema = {
+    id: professional.slug,
+    name: professional.name,
+    category: category.name,
+    specialty: professional.specialty,
+    location: professional.location,
+    rating: professional.rating,
+    reviewCount: professional.reviewCount,
+    priceFrom: professional.priceFrom,
+    phone: professional.phone,
+    whatsapp: professional.whatsapp,
+    image: profileImage,
+    description: professional.bio.join(' '),
+    responseTime: professional.responseTime,
+  }
   const whatsappMessage = encodeURIComponent(
     `Hola ${professional.name}, te escribo desde OFICIO Ibiza. Me gustaría consultarte sobre un servicio de ${category.name.toLowerCase()}.`,
   )
@@ -81,6 +104,15 @@ export function ProfessionalPage() {
 
   return (
     <>
+      <SeoMeta
+        title={`${professional.name} - ${category.name} en Ibiza | OFICIO`}
+        description={profileDescription}
+        image={profileImage}
+        url={profileUrl}
+        type="profile"
+      />
+      <JsonLd data={generateProfessionalSchema(schemaData)} />
+
       <section className="border-b border-line">
         <div className="container-editorial pb-10 pt-6 sm:pt-8 lg:pb-14">
           <nav

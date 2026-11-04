@@ -9,13 +9,14 @@ import {
 } from 'lucide-react'
 import { SectionLabel } from '@/components/SectionLabel'
 import { ServiceProfessionalCard } from '@/components/ServiceProfessionalCard'
+import { SeoMeta } from '@/components/seo/SeoMeta'
 import { Button } from '@/components/ui/button'
 import {
   formatRating,
   professionalsByCategory,
   responseTimeInMinutes,
 } from '@/data/professionals'
-import { usePageMeta } from '@/hooks/usePageMeta'
+import { SITE_URL } from '@/lib/schemas/professionalSchema'
 import { cn } from '@/lib/utils'
 
 const zoneOptions = [
@@ -146,12 +147,6 @@ export function FontaneriaPage() {
     }
   }, [zoneParam])
 
-  usePageMeta({
-    title: 'Fontanería en Ibiza — Profesionales verificados | OFICIO',
-    description:
-      'Profesionales de fontanería verificados en Ibiza para fugas, instalaciones, desatascos y climatización. Compara perfiles, zonas, precios y disponibilidad.',
-  })
-
   const professionals = professionalsByCategory('fontaneros')
 
   const results = useMemo(() => {
@@ -198,6 +193,14 @@ export function FontaneriaPage() {
 
   return (
     <>
+      <SeoMeta
+        title="Fontanería en Ibiza — Profesionales verificados | OFICIO"
+        description="Profesionales de fontanería verificados en Ibiza para fugas, instalaciones, desatascos y climatización. Compara perfiles, zonas, precios y disponibilidad."
+        image={`${SITE_URL}/images/service-plumbing.jpg`}
+        url={`${SITE_URL}/servicios/fontaneria`}
+        type="website"
+      />
+
       <section className="border-b border-line">
         <div className="container-editorial pb-10 pt-6 sm:pt-8 lg:pb-14">
           <nav

@@ -12,6 +12,7 @@ import { FilterPanel, type Filters } from '@/components/FilterPanel'
 import { ProfessionalCard } from '@/components/ProfessionalCard'
 import { Reveal } from '@/components/Reveal'
 import { SectionLabel } from '@/components/SectionLabel'
+import { SeoMeta } from '@/components/seo/SeoMeta'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -27,7 +28,7 @@ import {
   professionalsByCategory,
   type Professional,
 } from '@/data/professionals'
-import { usePageMeta } from '@/hooks/usePageMeta'
+import { SITE_URL } from '@/lib/schemas/professionalSchema'
 
 type SortOption = 'rating' | 'recent' | 'near'
 
@@ -96,11 +97,6 @@ export function CategoryPage({ category }: { category: Category }) {
     }
   }, [zoneParam])
 
-  usePageMeta({
-    title: `${category.name} en Ibiza — Profesionales verificados | OFICIO`,
-    description: `${category.longDescription} Encuentra ${category.singular.toLowerCase()} verificados en Ibiza.`,
-  })
-
   const categoryProfessionals = professionalsByCategory(category.slug)
   const results = useMemo(
     () => filterAndSort(categoryProfessionals, filters, sort),
@@ -121,6 +117,14 @@ export function CategoryPage({ category }: { category: Category }) {
 
   return (
     <>
+      <SeoMeta
+        title={`${category.name} en Ibiza — Profesionales verificados | OFICIO`}
+        description={`${category.longDescription} Encuentra ${category.singular.toLowerCase()} verificados en Ibiza.`}
+        image={`${SITE_URL}${category.image}`}
+        url={`${SITE_URL}${category.path}`}
+        type="website"
+      />
+
       <section className="border-b border-line">
         <div className="container-editorial pb-12 pt-6 sm:pt-8 lg:pb-16">
           <nav

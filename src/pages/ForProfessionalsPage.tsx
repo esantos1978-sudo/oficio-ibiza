@@ -15,6 +15,7 @@ import {
 import { JoinDialog } from '@/components/LeadDialogs'
 import { Reveal } from '@/components/Reveal'
 import { SectionLabel } from '@/components/SectionLabel'
+import { SeoMeta } from '@/components/seo/SeoMeta'
 import { Button } from '@/components/ui/button'
 import {
   Accordion,
@@ -23,7 +24,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { professionalsBySlug } from '@/data/professionals'
-import { usePageMeta } from '@/hooks/usePageMeta'
+import { SITE_URL } from '@/lib/schemas/professionalSchema'
 
 const benefits = [
   {
@@ -131,14 +132,16 @@ export function ForProfessionalsPage() {
   const ana = professionalsBySlug['ana-torres']
   const carlos = professionalsBySlug['carlos-vidal']
 
-  usePageMeta({
-    title: 'Para profesionales — Únete al directorio de Ibiza | OFICIO',
-    description:
-      'Haz que tu oficio llegue a propietarios y agencias de alquiler en Ibiza. 99 € al año, todo incluido, sin comisiones por trabajo. Plazas limitadas.',
-  })
-
   return (
     <>
+      <SeoMeta
+        title="Para profesionales — Únete al directorio de Ibiza | OFICIO"
+        description="Haz que tu oficio llegue a propietarios y agencias de alquiler en Ibiza. 99 € al año, todo incluido, sin comisiones por trabajo. Plazas limitadas."
+        image="/images/work-construction.jpg"
+        url={`${SITE_URL}/profesionales`}
+        type="website"
+      />
+
       <section className="border-b border-line">
         <div className="container-editorial pb-12 pt-6 sm:pt-8 lg:pb-16">
           <nav

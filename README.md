@@ -65,6 +65,14 @@ Imágenes de Unsplash descargadas y servidas localmente para que el sitio no dep
 externas en tiempo de ejecución. Las fotos se usan como placeholders editoriales; para producción,
 sustitúyelas por fotografía propia de los profesionales y de la isla.
 
+## SEO técnico
+
+- `SeoMeta` actualiza título, descripción, canonical, Open Graph y Twitter Cards en cada ruta.
+- `JsonLd` inyecta datos estructurados schema.org en el `<head>`.
+- La homepage publica `Organization` y `WebSite`; cada perfil publica `ProfessionalService` con
+  valoraciones, precio, horario y área de servicio.
+- `index.html` incluye metadatos sociales base y directivas `robots` para rastreadores.
+
 ## Accesibilidad
 
 Navegación con teclado, foco visible, skip link, etiquetas de formulario, tabs y diálogos con

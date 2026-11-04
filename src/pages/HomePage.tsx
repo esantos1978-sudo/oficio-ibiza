@@ -14,10 +14,15 @@ import { Reveal } from '@/components/Reveal'
 import { SearchBar } from '@/components/SearchBar'
 import { SectionLabel } from '@/components/SectionLabel'
 import { StarRating } from '@/components/StarRating'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { SeoMeta } from '@/components/seo/SeoMeta'
 import { Button } from '@/components/ui/button'
 import { categories } from '@/data/categories'
 import { featuredProfessionals } from '@/data/professionals'
-import { usePageMeta } from '@/hooks/usePageMeta'
+import {
+  generateOrganizationSchema,
+  generateWebsiteSchema,
+} from '@/lib/schemas/professionalSchema'
 
 const trustPoints = [
   {
@@ -62,15 +67,21 @@ const steps = [
   },
 ]
 
-export function HomePage() {
-  usePageMeta({
-    title: 'OFICIO — Los mejores profesionales de Ibiza, en un solo lugar',
-    description:
-      'Directorio curado de fontaneros, electricistas, jardineros, piscinas, limpieza y reformas en Ibiza. Profesionales verificados y sin comisiones.',
-  })
+const organizationSchema = generateOrganizationSchema()
+const websiteSchema = generateWebsiteSchema()
 
+export function HomePage() {
   return (
     <>
+      <SeoMeta
+        title="OFICIO — Los mejores profesionales de Ibiza, en un solo lugar"
+        description="Directorio curado de fontaneros, electricistas, jardineros, piscinas, limpieza y reformas en Ibiza. Profesionales verificados y sin comisiones."
+        image="/images/og.jpg"
+        type="website"
+      />
+      <JsonLd data={organizationSchema} />
+      <JsonLd data={websiteSchema} />
+
       <section className="relative overflow-hidden pb-14 pt-8 sm:pt-12 lg:pb-20 lg:pt-14">
         <div className="container-editorial">
           <div className="grid gap-y-10 lg:grid-cols-12 lg:items-end lg:gap-x-10 xl:gap-x-16">
