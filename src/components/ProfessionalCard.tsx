@@ -28,8 +28,8 @@ export function ProfessionalCard({
       >
         <div
           className={cn(
-            'relative overflow-hidden bg-sand',
-            compact ? 'aspect-[4/3]' : 'aspect-[4/5]',
+            'relative max-h-40 overflow-hidden rounded-lg bg-sand',
+            compact ? 'h-36' : 'h-40',
           )}
         >
           <img

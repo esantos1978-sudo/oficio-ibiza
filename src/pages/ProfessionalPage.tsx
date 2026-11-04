@@ -99,13 +99,13 @@ export function ProfessionalPage() {
           </nav>
 
           <div className="mt-8 grid gap-8 lg:grid-cols-12 lg:gap-12 xl:gap-16">
-            <div className="lg:col-span-5">
+            <div className="lg:col-span-5 lg:self-center">
               <figure className="relative">
-                <div className="image-grain relative aspect-[4/5] overflow-hidden bg-sand sm:aspect-[5/4] lg:aspect-[4/5]">
+                <div className="image-grain relative h-48 max-h-48 overflow-hidden rounded-lg bg-sand">
                   <img
                     src={professional.image}
                     alt={`Retrato de ${professional.name}, ${professional.specialty} en Ibiza`}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover object-[center_35%]"
                   />
                   <div className="absolute inset-x-0 top-0 flex items-start justify-between p-4">
                     <Badge variant="verified" className="gap-1.5 px-2.5 py-1.5">
@@ -334,7 +334,7 @@ export function ProfessionalPage() {
                         key={`${item.src}-${index}`}
                         type="button"
                         onClick={() => setActiveImage(item)}
-                        className="group relative block aspect-[4/3] overflow-hidden bg-sand text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay-deep"
+                        className="group relative block aspect-[4/3] max-h-40 overflow-hidden rounded-lg bg-sand text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay-deep"
                         aria-label={`Ampliar imagen: ${item.caption}, ${item.location}`}
                       >
                         <img

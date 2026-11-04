@@ -348,7 +348,7 @@ export function ForProfessionalsPage() {
               >
                 <Link
                   to={`/profesional/${professional.slug}`}
-                  className="group block aspect-[4/5] overflow-hidden bg-sand sm:aspect-[3/4]"
+                  className="group block h-40 max-h-40 overflow-hidden rounded-lg bg-sand"
                 >
                   <img
                     src={professional.image}

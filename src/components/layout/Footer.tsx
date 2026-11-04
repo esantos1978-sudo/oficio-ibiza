@@ -8,7 +8,7 @@ const footerNav = [
     title: 'Servicios',
     links: categories.map((category) => ({
       label: category.name,
-      to: category.path,
+      to: category.slug === 'fontaneros' ? '/servicios/fontaneria' : category.path,
     })),
   },
   {

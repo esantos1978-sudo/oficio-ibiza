@@ -22,7 +22,9 @@ export function SearchBar({ className }: { className?: string }) {
     if (!category) return
 
     const query = zone ? `?zona=${encodeURIComponent(zone)}` : ''
-    navigate(`${category.path}${query}`)
+    const destination =
+      category.slug === 'fontaneros' ? '/servicios/fontaneria' : category.path
+    navigate(`${destination}${query}`)
   }
 
   return (

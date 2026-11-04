@@ -1472,6 +1472,230 @@ export const professionals: Professional[] = [
       },
     ],
   },
+  {
+    slug: 'pedro-sanchez',
+    name: 'Pedro Sánchez',
+    category: 'fontaneros',
+    specialty: 'Fontanería general y desatascos',
+    tagline: 'Resolutivo, cercano y con el presupuesto claro desde el primer mensaje.',
+    image: '/images/pro-pedro.jpg',
+    location: 'San Antonio',
+    areas: ['San Antonio', 'Sant Antoni', 'Cala Gració', 'Santa Agnès', 'San José'],
+    rating: 4.7,
+    reviewCount: 22,
+    reviewBreakdown: [17, 4, 1, 0, 0],
+    priceFrom: 40,
+    experience: 13,
+    languages: ['Español', 'Català', 'Inglés'],
+    verified: true,
+    featured: false,
+    urgent: true,
+    availableThisWeek: true,
+    joined: '2019-05-14',
+    responseTime: 'menos de 3 horas',
+    responseRate: '95%',
+    distanceKm: 15.8,
+    phone: '+34 648 771 203',
+    whatsapp: '34648771203',
+    email: 'pedro@oficio.ibiza',
+    bio: [
+      'Soy fontanero y llevo trece años atendiendo casas, apartamentos y pequeños comercios en el oeste de Ibiza. Trabajo sobre todo en San Antonio y Santa Agnès, aunque me muevo por toda la isla cuando hace falta.',
+      'Me gusta resolver rápido, pero no a cualquier precio. Antes de cambiar una pieza compruebo de dónde viene el problema y explico las opciones. En verano llevo material de urgencia en la furgoneta para no dejar una casa sin agua si puedo evitarlo.',
+    ],
+    services: [
+      'Reparación de fugas',
+      'Desatascos',
+      'Cambio de grifos',
+      'Reparación de cisternas',
+      'Instalación de sanitarios',
+      'Mantenimiento de comunidades',
+    ],
+    schedule: [
+      { day: 'Lunes', hours: '08:00 — 18:00' },
+      { day: 'Martes', hours: '08:00 — 18:00' },
+      { day: 'Miércoles', hours: '08:00 — 18:00' },
+      { day: 'Jueves', hours: '08:00 — 18:00' },
+      { day: 'Viernes', hours: '08:00 — 18:00' },
+      { day: 'Sábado', hours: '09:00 — 14:00' },
+      { day: 'Domingo', hours: 'Urgencias', closed: false },
+    ],
+    gallery: [
+      {
+        src: '/images/work-bathroom.jpg',
+        caption: 'Cambio de sanitarios',
+        location: 'San Antonio',
+      },
+      {
+        src: '/images/work-kitchen2.jpg',
+        caption: 'Reparación de cocina',
+        location: 'Cala Gració',
+      },
+      {
+        src: '/images/work-stone.jpg',
+        caption: 'Baño de invitados',
+        location: 'Santa Agnès',
+      },
+      {
+        src: '/images/work-terrace.jpg',
+        caption: 'Ducha exterior',
+        location: 'San José',
+      },
+      {
+        src: '/images/work-details.jpg',
+        caption: 'Acabados de baño',
+        location: 'San Antonio',
+      },
+      {
+        src: '/images/work-door.jpg',
+        caption: 'Vivienda de temporada',
+        location: 'Sant Antoni',
+      },
+    ],
+    reviews: [
+      {
+        id: 'pedro-1',
+        author: 'Cliente verificado',
+        initials: 'CV',
+        rating: 5,
+        date: '2026-09-03',
+        text: 'Se nos atascó el desagüe de la cocina un viernes por la tarde, con la casa llena. Pedro llegó en menos de dos horas, desmontó el sifón y encontró restos de una reforma antigua. Lo dejó funcionando y nos explicó cómo mantenerlo. Cobró lo acordado por teléfono.',
+        service: 'Desatasco de cocina',
+        verified: true,
+      },
+      {
+        id: 'pedro-2',
+        author: 'Laura G.',
+        initials: 'LG',
+        rating: 4,
+        date: '2026-06-18',
+        text: 'Cambió un grifo que llevaba meses goteando y revisó la presión de toda la casa. Llegó unos veinte minutos tarde por un aviso anterior, pero avisó por WhatsApp. El trabajo quedó bien y el precio fue razonable. Volvería a llamarle.',
+        service: 'Cambio de grifo',
+        verified: true,
+      },
+      {
+        id: 'pedro-3',
+        author: 'Miquel A.',
+        initials: 'MA',
+        rating: 5,
+        date: '2026-02-24',
+        text: 'Teníamos una fuga en la terraza que estaba filtrando al garaje. Pedro vino el mismo día, levantó una parte del suelo y localizó el tubo. Dejó la zona seca y volvió a la semana siguiente para comprobar que no había vuelto a aparecer. Muy honesto.',
+        service: 'Localización de fuga',
+        verified: true,
+      },
+    ],
+  },
+  {
+    slug: 'luis-garcia',
+    name: 'Luis García',
+    category: 'fontaneros',
+    specialty: 'Fontanería, baños y climatización',
+    tagline: 'Instalaciones cuidadas y un acabado que no necesita explicaciones.',
+    image: '/images/pro-luis.jpg',
+    location: 'Santa Eulalia',
+    areas: ['Santa Eulalia', 'San Carlos', 'Cala Llonga', 'Es Canar', 'Santa Gertrudis'],
+    rating: 5,
+    reviewCount: 15,
+    reviewBreakdown: [15, 0, 0, 0, 0],
+    priceFrom: 50,
+    experience: 18,
+    languages: ['Español', 'Català', 'Inglés', 'Alemán'],
+    verified: true,
+    featured: false,
+    urgent: false,
+    availableThisWeek: true,
+    joined: '2017-10-03',
+    responseTime: 'menos de 2 horas',
+    responseRate: '99%',
+    distanceKm: 13.4,
+    phone: '+34 671 540 228',
+    whatsapp: '34671540228',
+    email: 'luis@oficio.ibiza',
+    bio: [
+      'Llevo dieciocho años trabajando en instalaciones de agua y climatización en Ibiza. Empecé en obra nueva y desde 2017 me dedico sobre todo a reformas de baños y mejoras en casas ya habitadas.',
+      'Me interesa que todo funcione bien y que se vea bien. Cuido la colocación de cada pieza, dejo las conexiones accesibles y pruebo la instalación antes de marcharme. Si algo no me convence, no lo entrego hasta resolverlo.',
+    ],
+    services: [
+      'Reforma de baños',
+      'Instalación de aerotermia',
+      'Termos y calderas',
+      'Sustitución de grifería',
+      'Reparación de fugas',
+      'Instalación de sanitarios',
+    ],
+    schedule: [
+      { day: 'Lunes', hours: '08:30 — 18:00' },
+      { day: 'Martes', hours: '08:30 — 18:00' },
+      { day: 'Miércoles', hours: '08:30 — 18:00' },
+      { day: 'Jueves', hours: '08:30 — 18:00' },
+      { day: 'Viernes', hours: '08:30 — 16:00' },
+      { day: 'Sábado', hours: 'Cerrado', closed: true },
+      { day: 'Domingo', hours: 'Cerrado', closed: true },
+    ],
+    gallery: [
+      {
+        src: '/images/work-bathroom.jpg',
+        caption: 'Reforma de baño principal',
+        location: 'Santa Eulalia',
+      },
+      {
+        src: '/images/work-stone.jpg',
+        caption: 'Baño con ducha a ras de suelo',
+        location: 'San Carlos',
+      },
+      {
+        src: '/images/work-kitchen.jpg',
+        caption: 'Punto de agua en cocina',
+        location: 'Cala Llonga',
+      },
+      {
+        src: '/images/work-terrace.jpg',
+        caption: 'Ducha exterior',
+        location: 'Es Canar',
+      },
+      {
+        src: '/images/work-details.jpg',
+        caption: 'Grifería y acabados',
+        location: 'Santa Gertrudis',
+      },
+      {
+        src: '/images/work-door.jpg',
+        caption: 'Reforma de villa',
+        location: 'Santa Eulalia',
+      },
+    ],
+    reviews: [
+      {
+        id: 'luis-1',
+        author: 'Elena M.',
+        initials: 'EM',
+        rating: 5,
+        date: '2026-09-10',
+        text: 'Luis reformó el baño principal de nuestra casa en Santa Eulalia. Nos presentó un presupuesto detallado por partidas y lo respetó. Trabajó con mucho cuidado, protegió el pasillo y dejó la casa limpia cada día. El resultado es elegante y funciona perfectamente.',
+        service: 'Reforma de baño',
+        verified: true,
+      },
+      {
+        id: 'luis-2',
+        author: 'Cliente verificado',
+        initials: 'CV',
+        rating: 5,
+        date: '2026-07-02',
+        text: 'Instaló una aerotermia y un termo nuevo en una casa de Cala Llonga. Explicó las opciones sin intentar vender lo más caro y ajustó la instalación al espacio disponible. La casa consume menos y el agua caliente es inmediata. Muy satisfechos.',
+        service: 'Aerotermia',
+        verified: true,
+      },
+      {
+        id: 'luis-3',
+        author: 'Thomas K.',
+        initials: 'TK',
+        rating: 5,
+        date: '2026-03-15',
+        text: 'Una fuga pequeña debajo del fregadero que llevaba semanas apareciendo. Luis la localizó en diez minutos, cambió la conexión y revisó el resto de puntos de agua de la cocina. Precio justo y una explicación clara de lo que había pasado.',
+        service: 'Reparación de fuga',
+        verified: true,
+      },
+    ],
+  },
 ]
 
 export const professionalsBySlug = Object.fromEntries(
@@ -1493,6 +1717,20 @@ export function getCategoryProfessionalCount(category: CategorySlug) {
 export function formatRating(rating: number) {
   return rating.toFixed(1).replace('.', ',')
 }
+
+export function responseTimeInMinutes(responseTime: string) {
+  const match = responseTime.match(/(\d+)\s+(minuto|hora)/)
+  if (!match) return Number.POSITIVE_INFINITY
+  const amount = Number(match[1])
+  return match[2] === 'hora' ? amount * 60 : amount
+}
+
+export function formatResponseTime(responseTime: string) {
+  const minutes = responseTimeInMinutes(responseTime)
+  if (!Number.isFinite(minutes)) return responseTime
+  return minutes < 60 ? `< ${minutes} min` : `< ${minutes / 60}h`
+}
+
 
 export function formatDate(date: string) {
   return new Intl.DateTimeFormat('es-ES', {

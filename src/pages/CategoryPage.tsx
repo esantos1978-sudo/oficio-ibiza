@@ -327,7 +327,7 @@ export function CategoryPage({ category }: { category: Category }) {
               .map((item) => (
                 <Link
                   key={item.slug}
-                  to={item.path}
+                  to={item.slug === 'fontaneros' ? '/servicios/fontaneria' : item.path}
                   className="group flex items-center justify-between bg-background px-5 py-5 transition-colors hover:bg-cream"
                 >
                   <span className="flex items-center gap-3">

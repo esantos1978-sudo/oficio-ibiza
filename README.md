@@ -7,7 +7,10 @@ React, TypeScript, Tailwind CSS y componentes accesibles basados en Radix (estil
 
 - `/` — Home: hero, buscador por servicio y zona, seis categorías, profesionales destacados,
   prueba social y CTA para profesionales.
-- `/fontaneros-ibiza`, `/electricistas-ibiza`, `/piscinas-ibiza`, `/jardineros-ibiza`,
+- `/fontaneros-ibiza` — redirige a la nueva página de servicio `/servicios/fontaneria`.
+- `/servicios/fontaneria` — nueva página de categoría con barra de filtros y ordenación,
+  filtros activos descartables, cards detalladas y estado vacío.
+- `/electricistas-ibiza`, `/piscinas-ibiza`, `/jardineros-ibiza`,
   `/limpieza-ibiza`, `/manitas-ibiza` — listados con filtros por zona, valoración y
   disponibilidad, y orden por valoración, antigüedad y cercanía.
 - `/profesional/:slug` — perfil completo con pestañas de información, trabajos, reseñas
@@ -39,7 +42,7 @@ src/
     ...              buscador, cards, filtros, estrellas, formularios
   data/
     categories.ts    Las seis categorías y sus rutas
-    professionals.ts 12 profesionales, 8 zonas, reseñas y disponibilidad
+    professionals.ts 14 profesionales, 8 zonas, reseñas y disponibilidad
   pages/             Home, categoría, perfil, profesionales y 404
   hooks/             Metadatos de página
   index.css          Tokens y estilos editoriales
@@ -48,7 +51,7 @@ public/images/       Fotografía local descargada de Unsplash
 
 ## Datos
 
-Toda la información es de demostración. Los 12 perfiles incluyen biografía, servicios, zonas,
+Toda la información es de demostración. Los 14 perfiles incluyen biografía, servicios, zonas,
 idiomas, horario, galería y 3–4 reseñas detalladas. Para editar contenido, cambia
 `src/data/professionals.ts` y `src/data/categories.ts`.
 

@@ -15,10 +15,12 @@ export function CategoryCard({
   className?: string
 }) {
   const count = getCategoryProfessionalCount(category.slug)
+  const href =
+    category.slug === 'fontaneros' ? '/servicios/fontaneria' : category.path
 
   return (
     <Link
-      to={category.path}
+      to={href}
       className={cn(
         'group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-clay-deep',
         className,
