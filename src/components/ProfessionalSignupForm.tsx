@@ -42,7 +42,6 @@ const zoneOptions = [
   'San Juan',
   'Toda la isla',
 ]
-const priceUnitOptions = ['Por hora', 'Por visita', 'Por proyecto']
 const categoryOptions = categories.map((category) => category.name)
 
 type FormData = {
@@ -52,8 +51,6 @@ type FormData = {
   experience: string
   languages: string[]
   zone: string
-  priceFrom: string
-  priceUnit: string
   insurance: string
   bio: string
   phone: string
@@ -72,8 +69,6 @@ const initialForm: FormData = {
   experience: '',
   languages: [],
   zone: '',
-  priceFrom: '',
-  priceUnit: 'Por hora',
   insurance: '',
   bio: '',
   phone: '',
@@ -95,7 +90,6 @@ function fieldId(key: string) {
     category: 'signup-category',
     specialty: 'signup-specialty',
     zone: 'signup-zone',
-    priceFrom: 'signup-price',
     insurance: 'signup-insurance-yes',
     phone: 'signup-phone',
     email: 'signup-email',
@@ -174,10 +168,6 @@ export function ProfessionalSignupForm() {
       if (!form.zone) {
         nextErrors.zone = 'Selecciona tu zona principal de trabajo.'
       }
-      const price = Number(form.priceFrom)
-      if (!form.priceFrom.trim() || Number.isNaN(price) || price <= 0) {
-        nextErrors.priceFrom = 'Indica un precio orientativo válido.'
-      }
       if (!form.insurance) {
         nextErrors.insurance =
           'Indica si dispones de seguro de responsabilidad civil.'
@@ -228,14 +218,12 @@ export function ProfessionalSignupForm() {
   function buildWhatsappUrl() {
     const message = [
       '🔔 NUEVA SOLICITUD OFICIO',
-      '',
       `👤 Nombre: ${form.fullName.trim()}`,
       `🏷️ Categoría: ${form.category}`,
       `🔧 Especialidad: ${form.specialty.trim()}`,
       `⭐ Experiencia: ${form.experience || 'No indicada'}`,
       `🌍 Idiomas: ${form.languages.length > 0 ? form.languages.join(', ') : 'No indicados'}`,
       `📍 Zona: ${form.zone}`,
-      `💰 Desde: ${form.priceFrom}€ ${form.priceUnit}`,
       `🛡️ Seguro RC: ${form.insurance === 'si' ? 'Sí' : 'No'}`,
       '📝 Biografía:',
       form.bio.trim() || 'No indicada',
@@ -534,63 +522,6 @@ export function ProfessionalSignupForm() {
                     {errors.zone}
                   </p>
                 )}
-              </div>
-
-              <div>
-                <label htmlFor="signup-price" className={labelClass}>
-                  Precio orientativo desde <span className="text-clay-deep">*</span>
-                </label>
-                <div className="relative mt-2">
-                  <input
-                    id="signup-price"
-                    name="priceFrom"
-                    type="number"
-                    min="0"
-                    step="1"
-                    inputMode="decimal"
-                    required
-                    value={form.priceFrom}
-                    onChange={(event) => updateField('priceFrom', event.target.value)}
-                    aria-invalid={Boolean(errors.priceFrom)}
-                    aria-describedby={errors.priceFrom ? 'signup-price-error' : undefined}
-                    placeholder="45"
-                    className={cn(inputClass, 'pr-10')}
-                  />
-                  <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[13px] text-muted">
-                    €
-                  </span>
-                </div>
-                {errors.priceFrom && (
-                  <p id="signup-price-error" className={errorClass}>
-                    {errors.priceFrom}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="signup-price-unit" className={labelClass}>
-                  Unidad de precio
-                </label>
-                <div className="relative mt-2">
-                  <select
-                    id="signup-price-unit"
-                    name="priceUnit"
-                    value={form.priceUnit}
-                    onChange={(event) => updateField('priceUnit', event.target.value)}
-                    className={cn(inputClass, 'cursor-pointer appearance-none pr-9')}
-                  >
-                    {priceUnitOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown
-                    className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted"
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
-                </div>
               </div>
 
               <fieldset
