@@ -11,6 +11,7 @@ const mainNav = [
   { label: 'Servicios', to: '/#servicios' },
   { label: 'Selección', to: '/#destacados' },
   { label: 'Cómo funciona', to: '/#como-funciona' },
+  { label: 'Blog', to: '/blog' },
   { label: 'Para profesionales', to: '/profesionales' },
 ]
 

@@ -17,6 +17,8 @@ React, TypeScript, Tailwind CSS y componentes accesibles basados en Radix (estil
   verificadas y disponibilidad, además de contacto directo y solicitud de presupuesto.
 - `/profesionales` — landing de captación: beneficios, cómo entrar, cuota de 99 €/año, FAQ y
   formulario inline de alta en 3 pasos que envía la solicitud a WhatsApp.
+- `/blog` — diario editorial con artículo destacado y próximos temas.
+- `/blog/:slug` — artículo MDX con metadatos, contenido enriquecido y JSON-LD `BlogPosting`.
 
 ## Desarrollo
 
@@ -43,11 +45,27 @@ src/
   data/
     categories.ts    Las seis categorías y sus rutas
     professionals.ts 14 profesionales, 8 zonas, reseñas y disponibilidad
-  pages/             Home, categoría, perfil, profesionales y 404
+  content/blog/      Artículos MDX con frontmatter
+  components/blog/   Componentes y estilos de contenido MDX
+  pages/             Home, categoría, perfil, profesionales, blog y 404
   hooks/             Metadatos de página
   index.css          Tokens y estilos editoriales
 public/images/       Fotografía local descargada de Unsplash
+scripts/             Generación del blog y build estático
 ```
+
+## Blog
+
+Los artículos viven en `src/content/blog/*.mdx` y usan frontmatter (`title`, `description`,
+`date`, `author`, `category`, `tags`, `image`, `featured`). El script
+`scripts/generate-blog.mjs` compila los MDX y genera el manifiesto que consume la web.
+
+```bash
+pnpm generate:blog
+```
+
+`pnpm dev` y `pnpm build` ejecutan la generación automáticamente. Vite también está configurado
+con `@mdx-js/rollup`, `remark-gfm` y `rehype-pretty-code` para el flujo MDX del proyecto.
 
 ## Datos
 

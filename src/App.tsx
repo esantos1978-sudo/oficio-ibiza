@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { Layout } from '@/components/layout/Layout'
 import { categories } from '@/data/categories'
+import { BlogPage } from '@/pages/BlogPage'
+import { BlogPostPage } from '@/pages/BlogPostPage'
 import { CategoryPage } from '@/pages/CategoryPage'
 import { FontaneriaPage } from '@/pages/FontaneriaPage'
 import { ForProfessionalsPage } from '@/pages/ForProfessionalsPage'
@@ -30,6 +32,8 @@ export function App() {
             />
           ))}
         <Route path="/profesional/:slug" element={<ProfessionalPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/:slug" element={<BlogPostPage />} />
         <Route path="/profesionales" element={<ForProfessionalsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

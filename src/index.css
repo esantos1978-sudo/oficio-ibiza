@@ -210,6 +210,105 @@
     @apply body-copy;
   }
 
+  .prose-oficio > h1:first-of-type {
+    display: none;
+  }
+
+  .prose-oficio h2 {
+    @apply mt-12 font-display text-[clamp(1.9rem,3.2vw,2.7rem)] font-medium leading-[1.02] tracking-[-0.045em] text-ink;
+  }
+
+  .prose-oficio h3 {
+    @apply mt-9 font-display text-[clamp(1.5rem,2.4vw,2rem)] font-medium leading-[1.08] tracking-[-0.035em] text-ink;
+  }
+
+  .prose-oficio h2 + p,
+  .prose-oficio h3 + p {
+    @apply mt-4;
+  }
+
+  .prose-oficio p {
+    @apply my-5 text-[15px] leading-[1.8] text-muted;
+  }
+
+  .prose-oficio strong {
+    @apply font-medium text-ink;
+  }
+
+  .prose-oficio a {
+    @apply text-clay-deep underline decoration-clay/30 underline-offset-4 transition-colors hover:decoration-clay;
+  }
+
+  .prose-oficio ul,
+  .prose-oficio ol {
+    @apply my-6 space-y-2 pl-5 text-[15px] leading-[1.8] text-muted;
+  }
+
+  .prose-oficio ul {
+    list-style: disc;
+  }
+
+  .prose-oficio ol {
+    list-style: decimal;
+  }
+
+  .prose-oficio li::marker {
+    color: #c65d3a;
+  }
+
+  .prose-oficio blockquote {
+    @apply my-9 border-l-2 border-clay pl-5 font-display text-[22px] font-medium leading-[1.25] tracking-[-0.03em] text-ink sm:text-[26px];
+  }
+
+  .prose-oficio img {
+    @apply my-8 w-full rounded-lg;
+  }
+
+  .prose-oficio hr {
+    @apply my-10 border-line;
+  }
+
+  .prose-oficio code:not(pre code) {
+    @apply bg-sand px-1.5 py-0.5 font-mono text-[0.85em] text-ink;
+  }
+
+  .prose-oficio pre {
+    @apply my-8 overflow-x-auto rounded-lg bg-ink p-5 font-mono text-[12px] leading-[1.75] text-cream sm:text-[13px];
+  }
+
+  .prose-oficio pre code {
+    @apply bg-transparent p-0 text-inherit;
+  }
+
+  .prose-oficio figure[data-rehype-pretty-code-figure] {
+    @apply my-8;
+  }
+
+  .prose-oficio [data-rehype-pretty-code-title] {
+    @apply border border-b-0 border-ink/15 bg-sand px-4 py-2 font-mono text-[9px] uppercase tracking-[0.1em] text-muted;
+  }
+
+  .prose-oficio [data-rehype-pretty-code-title] + pre {
+    @apply mt-0 rounded-t-none;
+  }
+
+  .prose-oficio table {
+    @apply my-8 w-full border-collapse text-left text-[13px];
+  }
+
+  .prose-oficio th,
+  .prose-oficio td {
+    @apply border-b border-line px-3 py-2.5 align-top;
+  }
+
+  .prose-oficio th {
+    @apply font-mono text-[9px] uppercase tracking-[0.1em] text-ink;
+  }
+
+  .prose-oficio td {
+    @apply text-muted;
+  }
+
   .swipe-hint {
     background: linear-gradient(90deg, transparent, rgba(26, 26, 26, 0.08));
   }

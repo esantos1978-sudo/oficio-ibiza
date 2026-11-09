@@ -16,6 +16,7 @@ const footerNav = [
     links: [
       { label: 'Cómo funciona', to: '/#como-funciona' },
       { label: 'Profesionales destacados', to: '/#destacados' },
+      { label: 'Blog', to: '/blog' },
       { label: 'Para profesionales', to: '/profesionales' },
       { label: 'Preguntas frecuentes', to: '/profesionales#faq' },
     ],
