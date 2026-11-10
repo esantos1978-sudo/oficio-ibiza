@@ -18,6 +18,8 @@ export interface Professional {
 
 export function generateProfessionalSchema(pro: Professional) {
   const url = `${SITE_URL}/profesional/${pro.id}`
+  const hasPrice = pro.priceFrom > 0
+  const hasReviews = pro.reviewCount > 0
 
   return {
     '@type': 'ProfessionalService',
@@ -27,7 +29,9 @@ export function generateProfessionalSchema(pro: Professional) {
     image: pro.image,
     url,
     telephone: pro.phone,
-    priceRange: `€${pro.priceFrom} - €${pro.priceFrom * 3}`,
+    priceRange: hasPrice
+      ? `€${pro.priceFrom} - €${pro.priceFrom * 3}`
+      : 'Presupuesto a medida',
     address: {
       '@type': 'PostalAddress',
       addressLocality: pro.location,
@@ -39,13 +43,17 @@ export function generateProfessionalSchema(pro: Professional) {
       latitude: 38.9067,
       longitude: 1.4206,
     },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: pro.rating,
-      reviewCount: pro.reviewCount,
-      bestRating: 5,
-      worstRating: 1,
-    },
+    ...(hasReviews
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: pro.rating,
+            reviewCount: pro.reviewCount,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
     openingHoursSpecification: {
       '@type': 'OpeningHoursSpecification',
       dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
@@ -57,16 +65,20 @@ export function generateProfessionalSchema(pro: Professional) {
       name: 'Ibiza, Illes Balears',
     },
     knowsAbout: pro.specialty,
-    makesOffer: {
-      '@type': 'Offer',
-      itemOffered: {
-        '@type': 'Service',
-        name: pro.specialty,
-        serviceType: pro.category,
-      },
-      price: pro.priceFrom,
-      priceCurrency: 'EUR',
-    },
+    ...(hasPrice
+      ? {
+          makesOffer: {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: pro.specialty,
+              serviceType: pro.category,
+            },
+            price: pro.priceFrom,
+            priceCurrency: 'EUR',
+          },
+        }
+      : {}),
   }
 }
 

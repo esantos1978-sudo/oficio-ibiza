@@ -44,7 +44,7 @@ src/
     ...              buscador, cards, filtros, estrellas, formularios
   data/
     categories.ts    Las seis categorías y sus rutas
-    professionals.ts 14 profesionales, 8 zonas, reseñas y disponibilidad
+    professionals.ts 15 profesionales, 8 zonas, reseñas y disponibilidad
   content/blog/      Artículos MDX con frontmatter
   components/blog/   Componentes y estilos de contenido MDX
   pages/             Home, categoría, perfil, profesionales, blog y 404
@@ -69,9 +69,10 @@ con `@mdx-js/rollup`, `remark-gfm` y `rehype-pretty-code` para el flujo MDX del 
 
 ## Datos
 
-Toda la información es de demostración. Los 14 perfiles incluyen biografía, servicios, zonas,
-idiomas, horario, galería y 3–4 reseñas detalladas. Para editar contenido, cambia
-`src/data/professionals.ts` y `src/data/categories.ts`.
+Toda la información es de demostración salvo **HC Reformas (Hamlet)**, la primera ficha real del
+directorio. Los perfiles de muestra incluyen biografía, servicios, zonas, idiomas, horario, galería
+y 3–4 reseñas detalladas; HC Reformas todavía no tiene reseñas publicadas. Para editar contenido,
+cambia `src/data/professionals.ts` y `src/data/categories.ts`.
 
 El formulario de presupuesto sigue siendo una demo de interfaz. El formulario de alta de
 profesionales envía la solicitud formateada a WhatsApp; el número de destino se configura en la

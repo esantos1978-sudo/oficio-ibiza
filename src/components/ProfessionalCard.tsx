@@ -34,7 +34,7 @@ export function ProfessionalCard({
         >
           <img
             src={professional.image}
-            alt={`Retrato de ${professional.name}`}
+            alt={`${professional.name} — ${professional.specialty}`}
             loading="lazy"
             className="h-full w-full object-cover transition-transform duration-[1100ms] ease-editorial group-hover:scale-[1.035]"
           />
@@ -79,14 +79,20 @@ export function ProfessionalCard({
           </p>
 
           <div className="mt-3.5 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
-              <StarRating rating={professional.rating} showValue size={12} />
-              <span className="text-[11px] text-muted">
-                {professional.reviewCount} reseñas
-              </span>
-            </div>
+            {professional.reviewCount > 0 ? (
+              <div className="flex items-center gap-2.5">
+                <StarRating rating={professional.rating} showValue size={12} />
+                <span className="text-[11px] text-muted">
+                  {professional.reviewCount} reseñas
+                </span>
+              </div>
+            ) : (
+              <span className="text-[11px] text-muted">Nuevo en OFICIO</span>
+            )}
             <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.08em] text-muted">
-              Desde {professional.priceFrom} €
+              {professional.priceFrom > 0
+                ? `Desde ${professional.priceFrom} €`
+                : 'Presupuesto a medida'}
             </span>
           </div>
 

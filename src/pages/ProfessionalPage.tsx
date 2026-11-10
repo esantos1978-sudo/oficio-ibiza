@@ -136,7 +136,7 @@ export function ProfessionalPage() {
                 <div className="image-grain relative h-48 max-h-48 overflow-hidden rounded-lg bg-sand">
                   <img
                     src={professional.image}
-                    alt={`Retrato de ${professional.name}, ${professional.specialty} en Ibiza`}
+                    alt={`${professional.name} — ${professional.specialty} en Ibiza`}
                     className="h-full w-full object-cover object-[center_35%]"
                   />
                   <div className="absolute inset-x-0 top-0 flex items-start justify-between p-4">
@@ -189,12 +189,19 @@ export function ProfessionalPage() {
 
               <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
                 <div className="flex items-center gap-2">
-                  <StarRating
-                    rating={professional.rating}
-                    showValue
-                    reviewCount={professional.reviewCount}
-                    size={14}
-                  />
+                  {professional.reviewCount > 0 ? (
+                    <StarRating
+                      rating={professional.rating}
+                      showValue
+                      reviewCount={professional.reviewCount}
+                      size={14}
+                    />
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 text-[12px] text-muted">
+                      <span className="h-1.5 w-1.5 rounded-full bg-clay" />
+                      Nuevo en OFICIO
+                    </span>
+                  )}
                 </div>
                 <span className="h-3 w-px bg-line" aria-hidden="true" />
                 <span className="flex items-center gap-1.5 text-[12px] text-muted">
@@ -253,10 +260,10 @@ export function ProfessionalPage() {
                 </div>
                 <div>
                   <p className="font-display text-[26px] font-medium leading-none tracking-[-0.05em]">
-                    {professional.priceFrom} €
+                    {professional.priceFrom > 0 ? `${professional.priceFrom} €` : 'A medida'}
                   </p>
                   <p className="mt-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-muted">
-                    desde / visita
+                    {professional.priceFrom > 0 ? 'desde / visita' : 'presupuesto'}
                   </p>
                 </div>
               </div>
@@ -407,81 +414,101 @@ export function ProfessionalPage() {
                     </p>
                   </div>
 
-                  <div className="mt-8 grid gap-8 border-y border-line py-7 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-12">
-                    <div className="flex items-center gap-5">
-                      <div>
-                        <p className="font-display text-[58px] font-semibold leading-none tracking-[-0.07em]">
-                          {formatRating(professional.rating)}
-                        </p>
-                        <StarRating rating={professional.rating} className="mt-2" size={13} />
-                        <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.12em] text-muted">
-                          {professional.reviewCount} reseñas
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      {professional.reviewBreakdown.map((amount, index) => {
-                        const stars = 5 - index
-                        const percent = Math.round((amount / professional.reviewCount) * 100)
-                        return (
-                          <div key={stars} className="flex items-center gap-3">
-                            <span className="flex w-8 items-center gap-1 text-[10px] text-muted">
-                              {stars}
-                              <Star className="h-2.5 w-2.5 fill-clay text-clay" strokeWidth={0} />
-                            </span>
-                            <span className="h-[3px] flex-1 bg-ink/10">
-                              <span
-                                className="block h-full bg-clay"
-                                style={{ width: `${percent}%` }}
-                              />
-                            </span>
-                            <span className="w-7 text-right font-mono text-[9px] text-muted">
-                              {amount}
-                            </span>
+                  {professional.reviewCount > 0 ? (
+                    <>
+                      <div className="mt-8 grid gap-8 border-y border-line py-7 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-12">
+                        <div className="flex items-center gap-5">
+                          <div>
+                            <p className="font-display text-[58px] font-semibold leading-none tracking-[-0.07em]">
+                              {formatRating(professional.rating)}
+                            </p>
+                            <StarRating rating={professional.rating} className="mt-2" size={13} />
+                            <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.12em] text-muted">
+                              {professional.reviewCount} reseñas
+                            </p>
                           </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                  <div className="divide-y divide-line">
-                    {professional.reviews.map((review) => (
-                      <article key={review.id} className="py-7">
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                          <div className="flex items-center gap-3">
-                            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sand font-mono text-[10px] tracking-[0.08em] text-ink">
-                              {review.initials}
-                            </span>
-                            <div>
-                              <div className="flex flex-wrap items-center gap-2">
-                                <p className="text-[13px] font-medium">{review.author}</p>
-                                {review.verified && (
-                                  <Badge variant="accent" className="gap-1 px-2 py-1">
-                                    <FileCheck2 className="h-2.5 w-2.5" strokeWidth={1.8} />
-                                    Reseña verificada
-                                  </Badge>
-                                )}
-                              </div>
-                              <p className="mt-1 font-mono text-[8px] uppercase tracking-[0.1em] text-muted">
-                                {review.service} ·{' '}
-                                <time dateTime={review.date}>{formatDate(review.date)}</time>
-                              </p>
-                            </div>
-                          </div>
-                          <StarRating rating={review.rating} size={12} className="sm:mt-1" />
                         </div>
-                        <p className="mt-4 max-w-[68ch] text-[13px] leading-[1.75] text-muted sm:pl-[52px]">
-                          {review.text}
-                        </p>
-                      </article>
-                    ))}
-                  </div>
 
-                  <p className="pt-5 font-mono text-[8px] uppercase tracking-[0.12em] text-muted">
-                    Mostrando {professional.reviews.length} reseñas destacadas de{' '}
-                    {professional.reviewCount}
-                  </p>
+                        <div className="space-y-2">
+                          {professional.reviewBreakdown.map((amount, index) => {
+                            const stars = 5 - index
+                            const percent = Math.round(
+                              (amount / professional.reviewCount) * 100,
+                            )
+                            return (
+                              <div key={stars} className="flex items-center gap-3">
+                                <span className="flex w-8 items-center gap-1 text-[10px] text-muted">
+                                  {stars}
+                                  <Star
+                                    className="h-2.5 w-2.5 fill-clay text-clay"
+                                    strokeWidth={0}
+                                  />
+                                </span>
+                                <span className="h-[3px] flex-1 bg-ink/10">
+                                  <span
+                                    className="block h-full bg-clay"
+                                    style={{ width: `${percent}%` }}
+                                  />
+                                </span>
+                                <span className="w-7 text-right font-mono text-[9px] text-muted">
+                                  {amount}
+                                </span>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="divide-y divide-line">
+                        {professional.reviews.map((review) => (
+                          <article key={review.id} className="py-7">
+                            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                              <div className="flex items-center gap-3">
+                                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sand font-mono text-[10px] tracking-[0.08em] text-ink">
+                                  {review.initials}
+                                </span>
+                                <div>
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <p className="text-[13px] font-medium">{review.author}</p>
+                                    {review.verified && (
+                                      <Badge variant="accent" className="gap-1 px-2 py-1">
+                                        <FileCheck2 className="h-2.5 w-2.5" strokeWidth={1.8} />
+                                        Reseña verificada
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  <p className="mt-1 font-mono text-[8px] uppercase tracking-[0.1em] text-muted">
+                                    {review.service} ·{' '}
+                                    <time dateTime={review.date}>{formatDate(review.date)}</time>
+                                  </p>
+                                </div>
+                              </div>
+                              <StarRating rating={review.rating} size={12} className="sm:mt-1" />
+                            </div>
+                            <p className="mt-4 max-w-[68ch] text-[13px] leading-[1.75] text-muted sm:pl-[52px]">
+                              {review.text}
+                            </p>
+                          </article>
+                        ))}
+                      </div>
+
+                      <p className="pt-5 font-mono text-[8px] uppercase tracking-[0.12em] text-muted">
+                        Mostrando {professional.reviews.length} reseñas destacadas de{' '}
+                        {professional.reviewCount}
+                      </p>
+                    </>
+                  ) : (
+                    <div className="mt-8 border border-line bg-fog px-6 py-12 text-center">
+                      <Star className="mx-auto h-5 w-5 text-clay-deep" strokeWidth={1.4} />
+                      <p className="mx-auto mt-5 max-w-[34ch] font-display text-[25px] font-medium leading-tight tracking-[-0.035em]">
+                        Aún no hay reseñas.
+                      </p>
+                      <p className="mx-auto mt-3 max-w-[46ch] text-[12px] leading-relaxed text-muted">
+                        Este perfil acaba de incorporarse a OFICIO. Las reseñas verificadas se
+                        publicarán después de cada servicio.
+                      </p>
+                    </div>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="availability" className="pt-8 sm:pt-10">
@@ -581,15 +608,17 @@ export function ProfessionalPage() {
                       <Phone className="h-3.5 w-3.5 shrink-0 text-clay-deep" strokeWidth={1.5} />
                       {professional.phone}
                     </a>
-                    <a
-                      href={`mailto:${professional.email}`}
-                      className="flex items-center gap-3 text-muted transition-colors hover:text-ink"
-                    >
-                      <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center font-mono text-[10px] text-clay-deep">
-                        @
-                      </span>
-                      {professional.email}
-                    </a>
+                    {professional.email && (
+                      <a
+                        href={`mailto:${professional.email}`}
+                        className="flex items-center gap-3 text-muted transition-colors hover:text-ink"
+                      >
+                        <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center font-mono text-[10px] text-clay-deep">
+                          @
+                        </span>
+                        {professional.email}
+                      </a>
+                    )}
                     <p className="flex items-center gap-3 text-muted">
                       <MapPin className="h-3.5 w-3.5 shrink-0 text-clay-deep" strokeWidth={1.5} />
                       {professional.location} · {professional.areas.length} zonas

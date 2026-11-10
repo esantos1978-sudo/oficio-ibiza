@@ -43,7 +43,7 @@ export function ServiceProfessionalCard({
       <div className="relative h-40 max-h-40 overflow-hidden bg-sand">
         <img
           src={professional.image}
-          alt={`Retrato de ${professional.name}, ${professional.specialty}`}
+          alt={`${professional.name} — ${professional.specialty}`}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-[1100ms] ease-editorial group-hover:scale-[1.035]"
         />
