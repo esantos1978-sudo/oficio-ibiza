@@ -48,11 +48,27 @@ export function ServiceProfessionalCard({
           className="h-full w-full object-cover transition-transform duration-[1100ms] ease-editorial group-hover:scale-[1.035]"
         />
         <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-2 p-3.5">
-          <span className="inline-flex items-center gap-1.5 border border-[#CADAC5] bg-[#F3F8F0]/95 px-2.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-[#3E6847] backdrop-blur-sm">
-            <span className="flex h-3 w-3 items-center justify-center rounded-full bg-[#DDEBD8]">
-              <Check className="h-2 w-2" strokeWidth={2.5} />
+          <span
+            className={
+              professional.verified
+                ? 'inline-flex items-center gap-1.5 border border-[#CADAC5] bg-[#F3F8F0]/95 px-2.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-[#3E6847] backdrop-blur-sm'
+                : 'inline-flex items-center gap-1.5 border border-ink/15 bg-background/95 px-2.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-muted backdrop-blur-sm'
+            }
+          >
+            <span
+              className={
+                professional.verified
+                  ? 'flex h-3 w-3 items-center justify-center rounded-full bg-[#DDEBD8]'
+                  : 'flex h-3 w-3 items-center justify-center rounded-full bg-sand'
+              }
+            >
+              {professional.verified ? (
+                <Check className="h-2 w-2" strokeWidth={2.5} />
+              ) : (
+                <Clock3 className="h-2 w-2" strokeWidth={2} />
+              )}
             </span>
-            Verificado
+            {professional.verified ? 'Verificado' : 'En revisión'}
           </span>
           {professional.availableThisWeek && (
             <span className="inline-flex items-center gap-1.5 border border-cream/20 bg-ink/75 px-2.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-cream backdrop-blur-sm">
@@ -83,13 +99,17 @@ export function ServiceProfessionalCard({
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-y border-line py-3 text-[10px] text-muted">
-          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
-            <Star className="h-3 w-3 fill-clay text-clay" strokeWidth={0} />
-            <span className="font-medium text-ink">
-              {formatRating(professional.rating)}
+          {professional.reviewCount > 0 ? (
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+              <Star className="h-3 w-3 fill-clay text-clay" strokeWidth={0} />
+              <span className="font-medium text-ink">
+                {formatRating(professional.rating)}
+              </span>
+              <span>({professional.reviewCount} reseñas)</span>
             </span>
-            <span>({professional.reviewCount} reseñas)</span>
-          </span>
+          ) : (
+            <span className="whitespace-nowrap">Nuevo en OFICIO</span>
+          )}
           <span className="h-3 w-px bg-line" aria-hidden="true" />
           <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
             <Clock3 className="h-3 w-3" strokeWidth={1.5} />
@@ -97,7 +117,13 @@ export function ServiceProfessionalCard({
           </span>
           <span className="h-3 w-px bg-line" aria-hidden="true" />
           <span className="whitespace-nowrap">
-            Desde <span className="font-medium text-ink">{professional.priceFrom} €/h</span>
+            {professional.priceFrom > 0 ? (
+              <>
+                Desde <span className="font-medium text-ink">{professional.priceFrom} €/h</span>
+              </>
+            ) : (
+              'Presupuesto a medida'
+            )}
           </span>
         </div>
 

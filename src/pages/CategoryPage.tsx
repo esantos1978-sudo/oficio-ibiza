@@ -24,10 +24,8 @@ import {
 } from '@/components/ui/dialog'
 import type { Category } from '@/data/categories'
 import { categories } from '@/data/categories'
-import {
-  professionalsByCategory,
-  type Professional,
-} from '@/data/professionals'
+import type { Professional } from '@/data/professionals'
+import { getProfessionalsByCategory } from '@/lib/professionalsService'
 import { SITE_URL } from '@/lib/schemas/professionalSchema'
 
 type SortOption = 'rating' | 'recent' | 'near'
@@ -90,6 +88,10 @@ export function CategoryPage({ category }: { category: Category }) {
   })
   const [sort, setSort] = useState<SortOption>('rating')
   const [filtersOpen, setFiltersOpen] = useState(false)
+  const [categoryProfessionals, setCategoryProfessionals] = useState<Professional[]>([])
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
+  const [reloadKey, setReloadKey] = useState(0)
 
   useEffect(() => {
     if (zoneParam) {
@@ -97,7 +99,33 @@ export function CategoryPage({ category }: { category: Category }) {
     }
   }, [zoneParam])
 
-  const categoryProfessionals = professionalsByCategory(category.slug)
+  useEffect(() => {
+    let active = true
+    setLoading(true)
+    setLoadError('')
+
+    getProfessionalsByCategory(category.slug)
+      .then((professionals) => {
+        if (!active) return
+        setCategoryProfessionals(professionals)
+        setLoading(false)
+      })
+      .catch((error: unknown) => {
+        if (!active) return
+        setCategoryProfessionals([])
+        setLoadError(
+          error instanceof Error
+            ? error.message
+            : 'No se han podido cargar los profesionales.',
+        )
+        setLoading(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [category.slug, reloadKey])
+
   const results = useMemo(
     () => filterAndSort(categoryProfessionals, filters, sort),
     [categoryProfessionals, filters, sort],
@@ -153,9 +181,13 @@ export function CategoryPage({ category }: { category: Category }) {
               <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[9px] uppercase tracking-[0.13em] text-muted">
                 <span className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-clay" />
-                  {categoryProfessionals.length}{' '}
-                  {categoryProfessionals.length === 1 ? 'profesional' : 'profesionales'}{' '}
-                  verificados
+                  {loading
+                    ? 'Cargando profesionales'
+                    : `${categoryProfessionals.length} ${
+                        categoryProfessionals.length === 1
+                          ? 'profesional'
+                          : 'profesionales'
+                      } en el directorio`}
                 </span>
                 <span>Cobertura en toda la isla</span>
                 <span>Sin comisiones</span>
@@ -199,8 +231,12 @@ export function CategoryPage({ category }: { category: Category }) {
                 <div>
                   <p className="eyebrow">Resultados</p>
                   <p className="mt-2 text-[13px] text-muted" aria-live="polite">
-                    <span className="font-medium text-ink">{results.length}</span>{' '}
-                    {results.length === 1 ? 'profesional' : 'profesionales'} en {zoneText}
+                    <span className="font-medium text-ink">
+                      {loading ? '—' : results.length}
+                    </span>{' '}
+                    {loading
+                      ? 'cargando profesionales'
+                      : `${results.length === 1 ? 'profesional' : 'profesionales'} en ${zoneText}`}
                   </p>
                 </div>
 
@@ -239,7 +275,46 @@ export function CategoryPage({ category }: { category: Category }) {
                 </div>
               </div>
 
-              {results.length > 0 ? (
+              {loading ? (
+                <div className="mt-8 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:gap-x-7">
+                  {[1, 2].map((item) => (
+                    <div key={item} className="animate-pulse">
+                      <div className="h-40 rounded-lg bg-sand" />
+                      <div className="mt-4 h-3 w-2/3 bg-sand" />
+                      <div className="mt-3 h-2.5 w-1/2 bg-sand" />
+                      <div className="mt-5 h-10 border-t border-line" />
+                    </div>
+                  ))}
+                </div>
+              ) : loadError ? (
+                <div className="mt-8 border border-clay/25 bg-clay/[0.05] px-6 py-12 text-center sm:px-10">
+                  <h2 className="display-sm text-[28px]">No se pudo cargar el directorio.</h2>
+                  <p className="mx-auto mt-3 max-w-[46ch] text-[13px] leading-relaxed text-muted">
+                    {loadError}
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="mt-6"
+                    onClick={() => setReloadKey((value) => value + 1)}
+                  >
+                    Reintentar
+                  </Button>
+                </div>
+              ) : categoryProfessionals.length === 0 ? (
+                <div className="mt-8 border border-line bg-fog px-6 py-14 text-center sm:px-10">
+                  <Sparkles className="mx-auto h-5 w-5 text-clay-deep" strokeWidth={1.4} />
+                  <h2 className="display-sm mt-5 text-[30px]">
+                    Próximamente más profesionales en esta categoría
+                  </h2>
+                  <p className="mx-auto mt-3 max-w-[42ch] text-[13px] leading-relaxed text-muted">
+                    Estamos revisando nuevas incorporaciones para {category.name.toLowerCase()}.
+                    Vuelve pronto o explora otros servicios de la isla.
+                  </p>
+                  <Button asChild variant="outline" className="mt-7">
+                    <Link to="/#servicios">Explorar otros servicios</Link>
+                  </Button>
+                </div>
+              ) : results.length > 0 ? (
                 <div className="mt-8 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:gap-x-7">
                   {results.map((professional, index) => (
                     <Reveal key={professional.slug} delay={index * 70}>

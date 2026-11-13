@@ -40,8 +40,12 @@ export function ProfessionalCard({
           />
           <div className="absolute inset-x-0 top-0 flex items-start justify-between p-4">
             <span className="inline-flex items-center gap-1.5 border border-background/25 bg-background/90 px-2.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-ink backdrop-blur-sm">
-              <Check className="h-3 w-3 text-clay-deep" strokeWidth={2} />
-              Verificado
+              {professional.verified ? (
+                <Check className="h-3 w-3 text-clay-deep" strokeWidth={2} />
+              ) : (
+                <Clock3 className="h-3 w-3 text-muted" strokeWidth={1.5} />
+              )}
+              {professional.verified ? 'Verificado' : 'En revisión'}
             </span>
             {professional.availableThisWeek && (
               <span className="inline-flex items-center gap-1.5 bg-ink/75 px-2.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-background backdrop-blur-sm">

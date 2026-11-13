@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import {
   ArrowUpRight,
@@ -39,9 +39,10 @@ import {
   formatDate,
   formatJoined,
   formatRating,
-  professionalsBySlug,
   type GalleryItem,
+  type Professional,
 } from '@/data/professionals'
+import { getProfessionalBySlug } from '@/lib/professionalsService'
 import {
   SITE_URL,
   generateProfessionalSchema,
@@ -50,9 +51,88 @@ import {
 
 export function ProfessionalPage() {
   const { slug } = useParams()
-  const professional = slug ? professionalsBySlug[slug] : undefined
+  const [professional, setProfessional] = useState<Professional | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
+  const [reloadKey, setReloadKey] = useState(0)
   const [quoteOpen, setQuoteOpen] = useState(false)
   const [activeImage, setActiveImage] = useState<GalleryItem | null>(null)
+
+  useEffect(() => {
+    if (!slug) {
+      setProfessional(null)
+      setLoading(false)
+      return
+    }
+
+    let active = true
+    setLoading(true)
+    setLoadError('')
+    setProfessional(null)
+    setActiveImage(null)
+    setQuoteOpen(false)
+
+    getProfessionalBySlug(slug)
+      .then((data) => {
+        if (!active) return
+        setProfessional(data)
+        setLoading(false)
+      })
+      .catch((error: unknown) => {
+        if (!active) return
+        setLoadError(
+          error instanceof Error
+            ? error.message
+            : 'No se ha podido cargar el perfil.',
+        )
+        setLoading(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [slug, reloadKey])
+
+  if (loading) {
+    return (
+      <>
+        <SeoMeta
+          title="Cargando profesional | OFICIO Ibiza"
+          description="Cargando el perfil del profesional en OFICIO Ibiza."
+        />
+        <section className="container-editorial flex min-h-[60vh] flex-col items-center justify-center py-24 text-center">
+          <span className="h-8 w-8 animate-spin rounded-full border border-ink/15 border-t-clay" />
+          <p className="mt-5 font-mono text-[9px] uppercase tracking-[0.14em] text-muted">
+            Cargando perfil
+          </p>
+        </section>
+      </>
+    )
+  }
+
+  if (loadError) {
+    return (
+      <>
+        <SeoMeta
+          title="Error al cargar el profesional | OFICIO Ibiza"
+          description="No se ha podido cargar el perfil del profesional."
+        />
+        <section className="container-editorial flex min-h-[60vh] flex-col items-center justify-center py-24 text-center">
+          <p className="eyebrow">Error de conexión</p>
+          <h1 className="display-md mt-5">No se pudo cargar el perfil.</h1>
+          <p className="body-lg mt-4 max-w-[42ch]">{loadError}</p>
+          <div className="mt-8 flex flex-wrap justify-center gap-2">
+            <Button onClick={() => setReloadKey((value) => value + 1)}>
+              Reintentar
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/#servicios">Volver a servicios</Link>
+            </Button>
+          </div>
+        </section>
+      </>
+    )
+  }
 
   if (!professional) {
     return (
@@ -77,8 +157,10 @@ export function ProfessionalPage() {
 
   const category = categoryBySlug[professional.category]
   const profileUrl = `${SITE_URL}/profesional/${professional.slug}`
-  const profileImage = `${SITE_URL}${professional.image}`
-  const profileDescription = `${professional.tagline} ${professional.specialty} en ${professional.location}. Profesional verificado en OFICIO Ibiza.`
+  const profileImage = /^https?:\/\//i.test(professional.image)
+    ? professional.image
+    : `${SITE_URL}${professional.image}`
+  const profileDescription = `${professional.tagline} ${professional.specialty} en ${professional.location}. Profesional en OFICIO Ibiza.`
   const schemaData: ProfessionalSchema = {
     id: professional.slug,
     name: professional.name,
@@ -140,9 +222,16 @@ export function ProfessionalPage() {
                     className="h-full w-full object-cover object-[center_35%]"
                   />
                   <div className="absolute inset-x-0 top-0 flex items-start justify-between p-4">
-                    <Badge variant="verified" className="gap-1.5 px-2.5 py-1.5">
-                      <BadgeCheck className="h-3 w-3" strokeWidth={2} />
-                      Verificado
+                    <Badge
+                      variant={professional.verified ? 'verified' : 'default'}
+                      className="gap-1.5 px-2.5 py-1.5"
+                    >
+                      {professional.verified ? (
+                        <BadgeCheck className="h-3 w-3" strokeWidth={2} />
+                      ) : (
+                        <Clock3 className="h-3 w-3" strokeWidth={2} />
+                      )}
+                      {professional.verified ? 'Verificado' : 'En revisión'}
                     </Badge>
                     <span className="border border-cream/30 bg-ink/25 px-2.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.13em] text-cream backdrop-blur-sm">
                       Miembro desde {formatJoined(professional.joined).split(' de ')[1]}
@@ -155,8 +244,16 @@ export function ProfessionalPage() {
                   </div>
                 </div>
                 <figcaption className="mt-3 flex items-center justify-between font-mono text-[8px] uppercase tracking-[0.13em] text-muted">
-                  <span>{professional.experience} años de oficio</span>
-                  <span>Perfil verificado por OFICIO</span>
+                  <span>
+                    {professional.experience > 0
+                      ? `${professional.experience} años de oficio`
+                      : 'Experiencia a consultar'}
+                  </span>
+                  <span>
+                    {professional.verified
+                      ? 'Perfil verificado por OFICIO'
+                      : 'Perfil en revisión por OFICIO'}
+                  </span>
                 </figcaption>
               </figure>
             </div>
@@ -244,7 +341,7 @@ export function ProfessionalPage() {
               <div className="mt-8 grid grid-cols-3 gap-4 border-t border-line pt-5">
                 <div>
                   <p className="font-display text-[26px] font-medium leading-none tracking-[-0.05em]">
-                    {professional.experience}
+                    {professional.experience > 0 ? professional.experience : '—'}
                   </p>
                   <p className="mt-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-muted">
                     años de oficio
@@ -291,11 +388,18 @@ export function ProfessionalPage() {
                       Hola, soy {professional.name.split(' ')[0]}.
                     </h2>
                     <div className="mt-6 space-y-5">
-                      {professional.bio.map((paragraph) => (
-                        <p key={paragraph} className="body-copy">
-                          {paragraph}
+                      {professional.bio.length > 0 ? (
+                        professional.bio.map((paragraph) => (
+                          <p key={paragraph} className="body-copy">
+                            {paragraph}
+                          </p>
+                        ))
+                      ) : (
+                        <p className="body-copy">
+                          Este profesional todavía no ha añadido una descripción. Puedes
+                          contactarle directamente para conocer más sobre su trabajo.
                         </p>
-                      ))}
+                      )}
                     </div>
                   </div>
 
@@ -331,11 +435,15 @@ export function ProfessionalPage() {
                     <div>
                       <p className="eyebrow">Idiomas</p>
                       <p className="mt-3 text-[13px] leading-relaxed text-muted">
-                        {professional.languages.join(' · ')}
+                        {professional.languages.length > 0
+                          ? professional.languages.join(' · ')
+                          : 'No indicados'}
                       </p>
                       <p className="eyebrow mt-5">Experiencia</p>
                       <p className="mt-3 text-[13px] text-muted">
-                        {professional.experience} años trabajando en Ibiza
+                        {professional.experience > 0
+                          ? `${professional.experience} años trabajando en Ibiza`
+                          : 'Experiencia no indicada'}
                       </p>
                     </div>
                   </div>
@@ -344,10 +452,15 @@ export function ProfessionalPage() {
                     <div className="flex items-start gap-3.5">
                       <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-clay-deep" strokeWidth={1.4} />
                       <div>
-                        <p className="text-[13px] font-medium">Verificado por OFICIO</p>
+                        <p className="text-[13px] font-medium">
+                          {professional.verified
+                            ? 'Verificado por OFICIO'
+                            : 'Perfil en revisión'}
+                        </p>
                         <p className="mt-1 max-w-[48ch] text-[11px] leading-relaxed text-muted">
-                          Identidad, seguro de responsabilidad civil y referencias comprobadas.
-                          Revisamos el perfil cada temporada.
+                          {professional.verified
+                            ? 'Identidad, seguro de responsabilidad civil y referencias comprobadas. Revisamos el perfil cada temporada.'
+                            : 'Estamos comprobando la identidad y la documentación de este profesional.'}
                         </p>
                       </div>
                     </div>
@@ -368,6 +481,17 @@ export function ProfessionalPage() {
                   </div>
 
                   <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                    {professional.gallery.length === 0 && (
+                      <div className="border border-line bg-fog px-6 py-10 text-center sm:col-span-2">
+                        <p className="font-display text-[24px] font-medium tracking-[-0.03em]">
+                          Galería en preparación.
+                        </p>
+                        <p className="mx-auto mt-2 max-w-[44ch] text-[12px] leading-relaxed text-muted">
+                          Todavía no hay trabajos publicados. Contacta con el profesional para
+                          conocer más sobre su trabajo reciente.
+                        </p>
+                      </div>
+                    )}
                     {professional.gallery.map((item, index) => (
                       <button
                         key={`${item.src}-${index}`}
@@ -398,10 +522,12 @@ export function ProfessionalPage() {
                     ))}
                   </div>
 
-                  <p className="mt-6 font-mono text-[8px] uppercase leading-relaxed tracking-[0.12em] text-muted">
-                    Fotografías aportadas por el profesional. OFICIO comprueba que corresponden a
-                    trabajos reales.
-                  </p>
+                  {professional.gallery.length > 0 && (
+                    <p className="mt-6 font-mono text-[8px] uppercase leading-relaxed tracking-[0.12em] text-muted">
+                      Fotografías aportadas por el profesional. OFICIO comprueba que corresponden a
+                      trabajos reales.
+                    </p>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="reviews" className="pt-8 sm:pt-10">
@@ -414,7 +540,7 @@ export function ProfessionalPage() {
                     </p>
                   </div>
 
-                  {professional.reviewCount > 0 ? (
+                  {professional.reviews.length > 0 ? (
                     <>
                       <div className="mt-8 grid gap-8 border-y border-line py-7 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-12">
                         <div className="flex items-center gap-5">
@@ -523,34 +649,46 @@ export function ProfessionalPage() {
 
                   <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_0.8fr]">
                     <div className="border border-line">
-                      {professional.schedule.map((day) => {
-                        const isToday = day.day === todayName
-                        return (
-                          <div
-                            key={day.day}
-                            className={`flex items-center justify-between border-b border-line px-4 py-3.5 text-[12px] last:border-b-0 ${
-                              isToday ? 'bg-clay/[0.06]' : ''
-                            }`}
-                          >
-                            <span className={`flex items-center gap-2 ${isToday ? 'text-ink' : 'text-muted'}`}>
-                              {isToday && <span className="h-1.5 w-1.5 rounded-full bg-clay" />}
-                              {day.day}
-                              {isToday && (
-                                <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-clay-deep">
-                                  Hoy
-                                </span>
-                              )}
-                            </span>
-                            <span
-                              className={
-                                day.closed ? 'text-muted/60' : 'font-medium text-ink'
-                              }
+                      {professional.schedule.length > 0 ? (
+                        professional.schedule.map((day) => {
+                          const isToday = day.day === todayName
+                          return (
+                            <div
+                              key={day.day}
+                              className={`flex items-center justify-between border-b border-line px-4 py-3.5 text-[12px] last:border-b-0 ${
+                                isToday ? 'bg-clay/[0.06]' : ''
+                              }`}
                             >
-                              {day.hours}
-                            </span>
-                          </div>
-                        )
-                      })}
+                              <span className={`flex items-center gap-2 ${isToday ? 'text-ink' : 'text-muted'}`}>
+                                {isToday && <span className="h-1.5 w-1.5 rounded-full bg-clay" />}
+                                {day.day}
+                                {isToday && (
+                                  <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-clay-deep">
+                                    Hoy
+                                  </span>
+                                )}
+                              </span>
+                              <span
+                                className={
+                                  day.closed ? 'text-muted/60' : 'font-medium text-ink'
+                                }
+                              >
+                                {day.hours}
+                              </span>
+                            </div>
+                          )
+                        })
+                      ) : (
+                        <div className="px-6 py-10 text-center">
+                          <p className="font-display text-[24px] font-medium tracking-[-0.03em]">
+                            Horario a consultar.
+                          </p>
+                          <p className="mx-auto mt-2 max-w-[40ch] text-[12px] leading-relaxed text-muted">
+                            Contacta directamente con el profesional para confirmar disponibilidad
+                            y fechas.
+                          </p>
+                        </div>
+                      )}
                     </div>
 
                     <div className="space-y-4">
@@ -675,14 +813,22 @@ export function ProfessionalPage() {
                         <Languages className="h-3.5 w-3.5 text-clay-deep" strokeWidth={1.5} />
                         Idiomas
                       </dt>
-                      <dd className="text-right text-ink">{professional.languages.join(', ')}</dd>
+                      <dd className="text-right text-ink">
+                        {professional.languages.length > 0
+                          ? professional.languages.join(', ')
+                          : 'No indicados'}
+                      </dd>
                     </div>
                     <div className="flex items-center justify-between gap-4">
                       <dt className="flex items-center gap-2 text-muted">
                         <Briefcase className="h-3.5 w-3.5 text-clay-deep" strokeWidth={1.5} />
                         Experiencia
                       </dt>
-                      <dd className="text-right text-ink">{professional.experience} años</dd>
+                      <dd className="text-right text-ink">
+                        {professional.experience > 0
+                          ? `${professional.experience} años`
+                          : 'No indicada'}
+                      </dd>
                     </div>
                   </dl>
                 </div>

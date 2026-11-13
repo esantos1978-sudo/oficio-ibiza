@@ -56,10 +56,23 @@ requiere que la tabla tenga, al menos, las columnas usadas por el formulario:
 `phone`, `description`, `response_time`, `verified`, `image`, `gallery` y `created_at`.
 
 Para que el panel funcione en producción, configura las políticas RLS de Supabase para que solo
-usuarios autenticados puedan leer y escribir en `professionals` y subir archivos al bucket.
+usuarios autenticados puedan escribir en `professionals` y subir archivos al bucket.
 
-El panel escribe en Supabase. La web pública mantiene actualmente su directorio editorial local;
-la conexión de las fichas públicas a esa misma tabla queda como siguiente paso de integración.
+La web pública lee de la misma tabla mediante `src/lib/professionalsService.ts`: la home muestra
+las últimas fichas, las categorías filtran por `category` y los perfiles se resuelven por `slug`.
+Necesita una política de lectura para el rol `anon`:
+
+```sql
+create policy "Public professionals read"
+on public.professionals
+for select
+to anon
+using (true);
+```
+
+Si prefieres publicar solo fichas verificadas, cambia `using (true)` por
+`using (verified = true)`. El bucket `professional-images` debe ser público (o tener una política
+de lectura equivalente) para que las URLs de `getPublicUrl()` funcionen en la web.
 
 ## Estructura
 
@@ -71,7 +84,9 @@ src/
     ...              buscador, cards, filtros, estrellas, formularios
   data/
     categories.ts    Las seis categorías y sus rutas
-    professionals.ts 15 profesionales, 8 zonas, reseñas y disponibilidad
+    professionals.ts Tipos, zonas y datos editoriales de referencia
+  lib/
+    professionalsService.ts  Consultas públicas a Supabase y mapeo de fichas
   content/blog/      Artículos MDX con frontmatter
   components/blog/   Componentes y estilos de contenido MDX
   pages/             Home, categoría, perfil, profesionales, blog y 404
@@ -96,14 +111,15 @@ con `@mdx-js/rollup`, `remark-gfm` y `rehype-pretty-code` para el flujo MDX del 
 
 ## Datos
 
-Toda la información es de demostración salvo **HC Reformas (Hamlet)**, la primera ficha real del
-directorio. Los perfiles de muestra incluyen biografía, servicios, zonas, idiomas, horario, galería
-y 3–4 reseñas detalladas; HC Reformas todavía no tiene reseñas publicadas. Para editar contenido,
-cambia `src/data/professionals.ts` y `src/data/categories.ts`.
+El directorio público (home, categorías y perfiles) se lee de Supabase a través de
+`src/lib/professionalsService.ts`. Para publicar o editar una ficha, usa el panel `/admin` o la
+tabla `professionals`.
 
-El formulario de presupuesto sigue siendo una demo de interfaz. El formulario de alta de
-profesionales envía la solicitud formateada a WhatsApp; el número de destino se configura en la
-constante `OFICIO_WHATSAPP_NUMBER` de `src/components/ProfessionalSignupForm.tsx`.
+`src/data/professionals.ts` conserva los tipos del perfil, las zonas y algunos datos editoriales
+de referencia usados por componentes de marketing. El formulario de presupuesto sigue siendo una
+demo de interfaz. El formulario de alta de profesionales envía la solicitud formateada a WhatsApp;
+el número de destino se configura en la constante `OFICIO_WHATSAPP_NUMBER` de
+`src/components/ProfessionalSignupForm.tsx`.
 
 ## Fotografía
 

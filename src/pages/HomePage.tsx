@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   ArrowRight,
@@ -18,7 +19,8 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { SeoMeta } from '@/components/seo/SeoMeta'
 import { Button } from '@/components/ui/button'
 import { categories } from '@/data/categories'
-import { featuredProfessionals } from '@/data/professionals'
+import type { Professional } from '@/data/professionals'
+import { getAllProfessionals } from '@/lib/professionalsService'
 import {
   generateOrganizationSchema,
   generateWebsiteSchema,
@@ -71,6 +73,34 @@ const organizationSchema = generateOrganizationSchema()
 const websiteSchema = generateWebsiteSchema()
 
 export function HomePage() {
+  const [featured, setFeatured] = useState<Professional[]>([])
+  const [featuredLoading, setFeaturedLoading] = useState(true)
+  const [featuredError, setFeaturedError] = useState('')
+
+  useEffect(() => {
+    let active = true
+
+    getAllProfessionals()
+      .then((professionals) => {
+        if (!active) return
+        setFeatured(professionals.slice(0, 4))
+        setFeaturedLoading(false)
+      })
+      .catch((error: unknown) => {
+        if (!active) return
+        setFeaturedError(
+          error instanceof Error
+            ? error.message
+            : 'No se ha podido cargar la selección.',
+        )
+        setFeaturedLoading(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [])
+
   return (
     <>
       <SeoMeta
@@ -235,8 +265,8 @@ export function HomePage() {
             </Reveal>
             <Reveal delay={100} className="md:pb-1">
               <p className="max-w-[34ch] body-lg">
-                Una pequeña selección de los oficios mejor valorados de la isla. Cada perfil está
-                verificado y actualizado.
+                Una pequeña selección de los oficios mejor valorados de la isla. Cada perfil pasa
+                por nuestra revisión antes de publicarse.
               </p>
               <Link
                 to="/#servicios"
@@ -249,11 +279,40 @@ export function HomePage() {
           </div>
 
           <div className="mt-12 grid gap-x-5 gap-y-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-x-6">
-            {featuredProfessionals.map((professional, index) => (
-              <Reveal key={professional.slug} delay={index * 80}>
-                <ProfessionalCard professional={professional} compact />
-              </Reveal>
-            ))}
+            {featuredLoading ? (
+              [1, 2, 3, 4].map((item) => (
+                <div key={item} className="animate-pulse">
+                  <div className="h-40 rounded-lg bg-sand" />
+                  <div className="mt-4 h-3 w-2/3 bg-sand" />
+                  <div className="mt-3 h-2.5 w-1/2 bg-sand" />
+                  <div className="mt-5 h-10 border-t border-line" />
+                </div>
+              ))
+            ) : featuredError ? (
+              <div className="border border-clay/25 bg-clay/[0.05] px-6 py-10 text-center sm:col-span-2 lg:col-span-4">
+                <p className="display-sm text-[28px]">No se pudo cargar la selección.</p>
+                <p className="mx-auto mt-3 max-w-[44ch] text-[12px] leading-relaxed text-muted">
+                  {featuredError}
+                </p>
+              </div>
+            ) : featured.length === 0 ? (
+              <div className="border border-line bg-fog px-6 py-12 text-center sm:col-span-2 lg:col-span-4">
+                <p className="display-sm text-[30px]">Próximamente más profesionales.</p>
+                <p className="mx-auto mt-3 max-w-[42ch] text-[13px] leading-relaxed text-muted">
+                  Estamos incorporando nuevos oficios al directorio. Mientras tanto, explora las
+                  categorías disponibles.
+                </p>
+                <Button asChild variant="outline" className="mt-6">
+                  <Link to="/#servicios">Explorar servicios</Link>
+                </Button>
+              </div>
+            ) : (
+              featured.map((professional, index) => (
+                <Reveal key={professional.slug} delay={index * 80}>
+                  <ProfessionalCard professional={professional} compact />
+                </Reveal>
+              ))
+            )}
           </div>
         </div>
       </section>

@@ -349,17 +349,14 @@ export function ForProfessionalsPage() {
                 delay={index * 100}
                 className="grid gap-5 border-t border-line pt-6 sm:grid-cols-[120px_1fr] sm:gap-6"
               >
-                <Link
-                  to={`/profesional/${professional.slug}`}
-                  className="group block h-40 max-h-40 overflow-hidden rounded-lg bg-sand"
-                >
+                <div className="group block h-40 max-h-40 overflow-hidden rounded-lg bg-sand">
                   <img
                     src={professional.image}
                     alt={`Retrato de ${professional.name}`}
                     loading="lazy"
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                   />
-                </Link>
+                </div>
                 <div className="flex flex-col justify-between">
                   <div>
                     <div className="flex items-center gap-1 text-clay">
@@ -384,16 +381,9 @@ export function ForProfessionalsPage() {
                         {professional.specialty}
                       </p>
                     </div>
-                    <Link
-                      to={`/profesional/${professional.slug}`}
-                      className="group/link flex items-center gap-1 font-mono text-[8px] uppercase tracking-[0.1em] text-ink"
-                    >
-                      Ver perfil
-                      <ArrowUpRight
-                        className="h-3 w-3 transition-transform group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5"
-                        strokeWidth={1.5}
-                      />
-                    </Link>
+                    <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-muted">
+                      Miembro del directorio
+                    </span>
                   </div>
                 </div>
               </Reveal>

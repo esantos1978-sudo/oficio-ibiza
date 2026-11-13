@@ -13,9 +13,10 @@ import { SeoMeta } from '@/components/seo/SeoMeta'
 import { Button } from '@/components/ui/button'
 import {
   formatRating,
-  professionalsByCategory,
   responseTimeInMinutes,
+  type Professional,
 } from '@/data/professionals'
+import { getProfessionalsByCategory } from '@/lib/professionalsService'
 import { SITE_URL } from '@/lib/schemas/professionalSchema'
 import { cn } from '@/lib/utils'
 
@@ -138,6 +139,10 @@ export function FontaneriaPage() {
   const [zone, setZone] = useState(initialZone)
   const [rating, setRating] = useState<RatingFilter>('all')
   const [sort, setSort] = useState<SortOption>('rating')
+  const [professionals, setProfessionals] = useState<Professional[]>([])
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
+  const [reloadKey, setReloadKey] = useState(0)
 
   useEffect(() => {
     if (zoneParam && zoneOptions.some((option) => option.value === zoneParam)) {
@@ -147,7 +152,32 @@ export function FontaneriaPage() {
     }
   }, [zoneParam])
 
-  const professionals = professionalsByCategory('fontaneros')
+  useEffect(() => {
+    let active = true
+    setLoading(true)
+    setLoadError('')
+
+    getProfessionalsByCategory('fontaneros')
+      .then((data) => {
+        if (!active) return
+        setProfessionals(data)
+        setLoading(false)
+      })
+      .catch((error: unknown) => {
+        if (!active) return
+        setProfessionals([])
+        setLoadError(
+          error instanceof Error
+            ? error.message
+            : 'No se han podido cargar los profesionales.',
+        )
+        setLoading(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [reloadKey])
 
   const results = useMemo(() => {
     const filtered = professionals.filter((professional) => {
@@ -172,13 +202,20 @@ export function FontaneriaPage() {
   }, [professionals, rating, sort, zone])
 
   const averageRating =
-    professionals.reduce((total, professional) => total + professional.rating, 0) /
-    professionals.length
+    professionals.length > 0
+      ? professionals.reduce(
+          (total, professional) => total + professional.rating,
+          0,
+        ) / professionals.length
+      : 0
   const averageResponseMinutes =
-    professionals.reduce(
-      (total, professional) => total + responseTimeInMinutes(professional.responseTime),
-      0,
-    ) / professionals.length
+    professionals.length > 0
+      ? professionals.reduce(
+          (total, professional) =>
+            total + responseTimeInMinutes(professional.responseTime),
+          0,
+        ) / professionals.length
+      : 0
 
   const hasActiveControls = zone !== '' || rating !== 'all' || sort !== 'rating'
 
@@ -232,17 +269,17 @@ export function FontaneriaPage() {
               <div className="grid grid-cols-3 gap-4 border-t border-line pt-5 lg:border-t-0 lg:pt-0">
                 <div>
                   <p className="font-display text-[clamp(2rem,3vw,2.6rem)] font-medium leading-none tracking-[-0.055em]">
-                    {String(professionals.length).padStart(2, '0')}
+                    {loading ? '—' : String(professionals.length).padStart(2, '0')}
                   </p>
                   <p className="mt-2 font-mono text-[8px] uppercase leading-relaxed tracking-[0.12em] text-muted">
                     profesionales
                     <br />
-                    verificados
+                    en el directorio
                   </p>
                 </div>
                 <div>
                   <p className="font-display text-[clamp(2rem,3vw,2.6rem)] font-medium leading-none tracking-[-0.055em]">
-                    {formatRating(averageRating)}
+                    {loading || professionals.length === 0 ? '—' : formatRating(averageRating)}
                   </p>
                   <p className="mt-2 font-mono text-[8px] uppercase leading-relaxed tracking-[0.12em] text-muted">
                     valoración
@@ -252,7 +289,9 @@ export function FontaneriaPage() {
                 </div>
                 <div>
                   <p className="whitespace-nowrap font-display text-[clamp(2rem,3vw,2.6rem)] font-medium leading-none tracking-[-0.055em]">
-                    &lt; {Math.ceil(averageResponseMinutes / 60)}h
+                    {loading || professionals.length === 0
+                      ? '—'
+                      : `< ${Math.ceil(averageResponseMinutes / 60)}h`}
                   </p>
                   <p className="mt-2 font-mono text-[8px] uppercase leading-relaxed tracking-[0.12em] text-muted">
                     respuesta
@@ -298,8 +337,14 @@ export function FontaneriaPage() {
                 className="font-mono text-[9px] uppercase tracking-[0.1em] text-muted"
                 aria-live="polite"
               >
-                <span className="font-medium text-ink">{results.length}</span>{' '}
-                {results.length === 1 ? 'profesional' : 'profesionales'}
+                {loading ? (
+                  'Cargando...'
+                ) : (
+                  <>
+                    <span className="font-medium text-ink">{results.length}</span>{' '}
+                    {results.length === 1 ? 'profesional' : 'profesionales'}
+                  </>
+                )}
               </p>
               {hasActiveControls ? (
                 <button
@@ -354,16 +399,61 @@ export function FontaneriaPage() {
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <SectionLabel number="02">Directorio</SectionLabel>
-              <h2 className="display-sm mt-4">Fontaneros verificados.</h2>
+              <h2 className="display-sm mt-4">Fontaneros en Ibiza.</h2>
             </div>
             <p className="text-[12px] text-muted" aria-live="polite">
-              Mostrando <span className="font-medium text-ink">{results.length}</span>{' '}
-              {results.length === 1 ? 'profesional' : 'profesionales'}
-              {zone ? ` en ${zone}` : ' en toda la isla'}
+              {loading
+                ? 'Cargando profesionales...'
+                : `Mostrando ${results.length} ${
+                    results.length === 1 ? 'profesional' : 'profesionales'
+                  }${zone ? ` en ${zone}` : ' en toda la isla'}`}
             </p>
           </div>
 
-          {results.length > 0 ? (
+          {loading ? (
+            <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-7">
+              {[1, 2, 3].map((item) => (
+                <div key={item} className="animate-pulse border border-line">
+                  <div className="h-40 bg-sand" />
+                  <div className="space-y-3 p-5">
+                    <div className="h-3 w-2/3 bg-sand" />
+                    <div className="h-2.5 w-1/2 bg-sand" />
+                    <div className="h-10 bg-sand" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : loadError ? (
+            <div className="border border-clay/25 bg-clay/[0.05] px-6 py-16 text-center sm:px-10">
+              <h2 className="display-sm text-[30px]">No se pudo cargar el directorio.</h2>
+              <p className="mx-auto mt-3 max-w-[46ch] text-[13px] leading-relaxed text-muted">
+                {loadError}
+              </p>
+              <Button
+                variant="outline"
+                className="mt-6"
+                onClick={() => setReloadKey((value) => value + 1)}
+              >
+                Reintentar
+              </Button>
+            </div>
+          ) : professionals.length === 0 ? (
+            <div className="border border-line bg-fog px-6 py-16 text-center sm:px-10 sm:py-20">
+              <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-ink/15 bg-background text-clay-deep">
+                <SearchX className="h-5 w-5" strokeWidth={1.4} />
+              </span>
+              <h2 className="display-sm mx-auto mt-6 max-w-[20ch] text-[30px] sm:text-[36px]">
+                Próximamente más profesionales en esta categoría
+              </h2>
+              <p className="mx-auto mt-4 max-w-[48ch] text-[13px] leading-relaxed text-muted">
+                Estamos revisando nuevas incorporaciones de fontanería para toda la isla. Vuelve
+                pronto o explora otros servicios.
+              </p>
+              <Button asChild variant="outline" className="mt-7">
+                <Link to="/#servicios">Explorar otros servicios</Link>
+              </Button>
+            </div>
+          ) : results.length > 0 ? (
             <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-7">
               {results.map((professional) => (
                 <ServiceProfessionalCard
