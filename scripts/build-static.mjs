@@ -1,5 +1,12 @@
 import { spawnSync } from 'node:child_process'
-import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -7,6 +14,35 @@ import { fileURLToPath } from 'node:url'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const require = createRequire(import.meta.url)
 process.chdir(root)
+
+function readLocalEnv() {
+  const envPath = path.join(root, '.env')
+  if (!existsSync(envPath)) return {}
+
+  return Object.fromEntries(
+    readFileSync(envPath, 'utf8')
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith('#') && line.includes('='))
+      .map((line) => {
+        const separator = line.indexOf('=')
+        const key = line.slice(0, separator).trim()
+        const rawValue = line.slice(separator + 1).trim()
+        return [key, rawValue.replace(/^['"]|['"]$/g, '')]
+      }),
+  )
+}
+
+const env = { ...readLocalEnv(), ...process.env }
+
+const envDefines = [
+  `--define:import.meta.env.VITE_SUPABASE_URL=${JSON.stringify(env.VITE_SUPABASE_URL ?? '')}`,
+  `--define:import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY=${JSON.stringify(env.VITE_SUPABASE_PUBLISHABLE_KEY ?? '')}`,
+  `--define:import.meta.env.VITE_SUPABASE_ANON_KEY=${JSON.stringify(env.VITE_SUPABASE_ANON_KEY ?? '')}`,
+  '--define:import.meta.env.MODE="production"',
+  '--define:import.meta.env.DEV="false"',
+  '--define:import.meta.env.PROD="true"',
+]
 
 const dist = path.join(root, 'dist')
 rmSync(dist, { recursive: true, force: true })
@@ -32,6 +68,7 @@ const esbuildArgs = [
   '--alias:@=./src',
   '--log-limit=0',
   '--define:process.env.NODE_ENV="production"',
+  ...envDefines,
 ]
 
 const jsBuild = spawnSync(esbuild, esbuildArgs, { cwd: root, stdio: 'inherit' })

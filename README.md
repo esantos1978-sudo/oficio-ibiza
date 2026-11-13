@@ -19,6 +19,10 @@ React, TypeScript, Tailwind CSS y componentes accesibles basados en Radix (estil
   formulario inline de alta en 3 pasos que envía la solicitud a WhatsApp.
 - `/blog` — diario editorial con artículo destacado y próximos temas.
 - `/blog/:slug` — artículo MDX con metadatos, contenido enriquecido y JSON-LD `BlogPosting`.
+- `/login` — acceso privado con Supabase Auth.
+- `/admin` — dashboard protegido con métricas y listado de profesionales.
+- `/admin/profesionales` — CRUD de fichas y subida de imágenes a Supabase Storage.
+- `/admin/ajustes` — cuenta y estado de la conexión.
 
 ## Desarrollo
 
@@ -33,6 +37,29 @@ Build de producción:
 pnpm build
 pnpm preview
 ```
+
+## Panel de administración
+
+El panel usa Supabase Auth, la tabla `professionals` y el bucket
+`professional-images`. Las rutas `/admin/*` están protegidas por sesión.
+
+Variables necesarias en `.env` (o en el entorno de Vercel):
+
+```bash
+VITE_SUPABASE_URL=
+VITE_SUPABASE_PUBLISHABLE_KEY=
+```
+
+La configuración de build estática lee estas variables y las inyecta en el bundle. El panel
+requiere que la tabla tenga, al menos, las columnas usadas por el formulario:
+`name`, `slug`, `category`, `specialty`, `location`, `rating`, `review_count`, `price_from`,
+`phone`, `description`, `response_time`, `verified`, `image`, `gallery` y `created_at`.
+
+Para que el panel funcione en producción, configura las políticas RLS de Supabase para que solo
+usuarios autenticados puedan leer y escribir en `professionals` y subir archivos al bucket.
+
+El panel escribe en Supabase. La web pública mantiene actualmente su directorio editorial local;
+la conexión de las fichas públicas a esa misma tabla queda como siguiente paso de integración.
 
 ## Estructura
 
